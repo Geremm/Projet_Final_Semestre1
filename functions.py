@@ -36,8 +36,8 @@ def affiche_nom(List_noms):
     return print_list(List_noms_sans_doublons)
 
 def min():
-    text = ""
     for i in range(8):
+        text = ""
         L = list_of_files(".\speeches", "txt")
         emplacement = "./speeches/" + L[i]
         emplacement_cleaned = "./cleaned/" + L[i]
@@ -54,7 +54,18 @@ def min():
                         text += char
                 file_cleaned.write(text)
 
-
+def remove_ponctuation():
+    Ponctuations = {",": '', "-": " ", "'": " ", ".": '', "!": '', "?": '', ":": '', "_":" "}
+    for i in range(8):
+        L = list_of_files(".\cleaned", "txt")
+        emplacement = "./cleaned/" + L[i]
+        with open(emplacement,"r") as file:
+            contenu = file.read()
+        with open(emplacement,"w") as file:
+            for val in contenu:
+                if val in Ponctuations:
+                    val = Ponctuations[val]
+            file.write(contenu)
 
 directory = "./speeches"
 files_names = list_of_files(directory, "txt")
