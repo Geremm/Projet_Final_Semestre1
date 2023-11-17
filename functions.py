@@ -54,6 +54,8 @@ def min():
                         text += char
                 file_cleaned.write(text)
 
+
+
 directory = "./speeches"
 files_names = list_of_files(directory, "txt")
 print(files_names)
