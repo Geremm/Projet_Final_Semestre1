@@ -55,8 +55,9 @@ def min():
                 file_cleaned.write(text)
 
 def remove_ponctuation():
-    Ponctuations = {",": '', "-": " ", "'": " ", ".": '', "!": '', "?": '', ":": '', "_":" "}
+    Ponctuations = {",": '', "-": " ", "'": " ", ".": '', "!": '', "?": '', ":": '', "_": " "}
     for i in range(8):
+        txt = ''
         L = list_of_files(".\cleaned", "txt")
         emplacement = "./cleaned/" + L[i]
         with open(emplacement,"r") as file:
@@ -64,11 +65,15 @@ def remove_ponctuation():
         with open(emplacement,"w") as file:
             for val in contenu:
                 if val in Ponctuations:
+                    print(Ponctuations[val])
                     val = Ponctuations[val]
-            file.write(contenu)
+                txt += val
+
+            file.write(txt)
 
 directory = "./speeches"
 files_names = list_of_files(directory, "txt")
 print(files_names)
 print(affiche_nom(['Chirac', 'Chirac', 'Giscard dEstaing', 'Hollande', 'Macron', 'Mitterrand', 'Mitterrand', 'Sarkozy']))
 print(min())
+print(remove_ponctuation())
