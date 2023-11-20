@@ -75,7 +75,8 @@ def remove_ponctuation():
 
 # Fonctions TF-IDF
 def TF(file):
-    with open(f"./cleaned/{file}.txt", 'r') as f:
+
+    with open(f"./cleaned/{file}", 'r') as f:
         list_of_word = []
         files = f.read().split()
         for word in files:
@@ -92,7 +93,39 @@ def TF(file):
         return nb_word_dic
 
 def IDF():
-    
+
+    #création d'une liste pour ouvir chaque fichier dans une boucle
+
+    name = ['Chirac1', 'Chirac2', 'Giscard dEstaing', 'Hollande', 'Macron', 'Mitterrand1', 'Mitterrand2', 'Sarkozy']
+    list_of_files = []
+
+    for i in name:
+        w = f"Nomination_{i}.txt"
+        list_of_files.append(w)
+
+    #itération avec la fonction TF
+
+    nb_word_dic = dict()
+
+    for file in list_of_files:
+        nb_word = TF(file)
+        for i in nb_word:
+            if i in nb_word_dic:
+                nb_word_dic[i] += 1
+            else:
+                nb_word_dic[i] = 1
+
+
+
+
+
+
+
+
+
+
+
+
 
 directory = "./speeches"
 files_names = list_of_files(directory, "txt")
