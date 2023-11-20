@@ -89,22 +89,23 @@ for i in name:
 # Fonction qui renvoie un dic associant le nombre de fois qu'un mot apparait dans un fichier (TF)
 def TF(file):
 
-    with open(f"{file}", 'r') as f:
+    #Ajout de chaque mot issue d'un fichier  dans une liste
+    with open(file, 'r') as f:
         list_of_word = []
         files = f.read().split()
         for word in files:
             list_of_word.append(word)
 
-        nb_word_dic = dict()
+    # creation du dic associant le nombre de fois qu'un mot apparait dans un fichier
 
+        nb_word_dic = dict()
         for i in list_of_word:
             if i in nb_word_dic:
                 nb_word_dic[i] += 1
             else:
                 nb_word_dic[i] = 1
 
-         return nb_word_dic
-
+    return nb_word_dic
 
 # Fonction qui renvoie l'IDF d'un mot
 def IDF(word):
@@ -132,7 +133,6 @@ def IDF(word):
 # Fonction qui renvoie un dic associant à chaque mot son IDF
 def dic_score_IDF():
 
-
     dic_score_IDF = dict()
 
     for file in list_of_files:
@@ -148,11 +148,39 @@ def dic_score_IDF():
 #Fonction qui calcule le score TF-IDF
 def TF_IDF(word,file):
 
-    idf = dic_score_IDF()
-    tf = TF(file)
-    score_TF_IDF = idf[word] * tf[word]
+    IDF = dic_score_IDF()
+    TF = TF(file)
+    score_TF_IDF = IDF[word] * TF[word]
 
     return score_TF_IDF
+
+#Fonction qui renvoie une matrice de tout les scores TF-IDF de chaque mot dans chaque fichier
+def Matrice_TF_IDF(list_of_files):
+
+
+    Matrice_TF_IDF = []
+
+    for file in list_of_files:
+        contenu = TF(file)
+        M1 = []
+        for word in contenu:
+            score_idf = TF_IDF(word, file)
+            M1.append(score_idf)
+        Matrice_TF_IDF.append(M1)
+
+    #Matrice de transposition
+
+    Matrice_TF_IDF_transpose = []
+
+    for i in range(len(Matrice_TF_IDF[0])):
+        transpose_line = []
+        for j in range(len(Matrice_TF_IDF)):
+            transpose_line.append(Matrice_TF_IDF[j][i])
+        Matrice_TF_IDF_transpose.append(transpose_line)
+
+
+    return Matrice_TF_IDF_transpose
+
 
 
 
