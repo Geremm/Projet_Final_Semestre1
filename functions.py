@@ -144,11 +144,13 @@ def dic_score_IDF():
 
     return dic_score_IDF
 
+
+#Fonction qui calcule le score TF-IDF
 def TF_IDF(word,file):
 
-    i = dic_score_IDF()
-    w = TF(file)
-    score_TF_IDF = i[word] * w[word]
+    idf = dic_score_IDF()
+    tf = TF(file)
+    score_TF_IDF = idf[word] * tf[word]
 
     return score_TF_IDF
 
