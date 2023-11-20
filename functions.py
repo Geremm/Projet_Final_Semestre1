@@ -103,17 +103,14 @@ def IDF():
         w = f"Nomination_{i}.txt"
         list_of_files.append(w)
 
-    #itération avec la fonction TF
+    for i in
 
-    nb_word_dic = dict()
 
-    for file in list_of_files:
-        nb_word = TF(file)
-        for i in nb_word:
-            if i in nb_word_dic:
-                nb_word_dic[i] += 1
-            else:
-                nb_word_dic[i] = 1
+
+
+
+
+
 
 
 
