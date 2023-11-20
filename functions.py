@@ -74,9 +74,22 @@ def remove_ponctuation():
 
 
 # Fonctions TF-IDF
+
+
+# Création d'une liste pour ouvir chaque fichier dans une boucle
+
+name = ['Chirac1', 'Chirac2', 'Giscard dEstaing', 'Hollande', 'Macron', 'Mitterrand1', 'Mitterrand2', 'Sarkozy']
+list_of_files = []
+
+for i in name:
+    w = f"./cleaned/Nomination_{i}.txt"
+    list_of_files.append(w)
+
+
+# Fonction qui renvoie un dic associant le nombre de fois qu'un mot apparait dans un fichier (TF)
 def TF(file):
 
-    with open(f"./cleaned/{file}", 'r') as f:
+    with open(f"{file}", 'r') as f:
         list_of_word = []
         files = f.read().split()
         for word in files:
@@ -90,37 +103,54 @@ def TF(file):
             else:
                 nb_word_dic[i] = 1
 
-        return nb_word_dic
-
-def IDF():
-
-    #création d'une liste pour ouvir chaque fichier dans une boucle
-
-    name = ['Chirac1', 'Chirac2', 'Giscard dEstaing', 'Hollande', 'Macron', 'Mitterrand1', 'Mitterrand2', 'Sarkozy']
-    list_of_files = []
-
-    for i in name:
-        w = f"Nomination_{i}.txt"
-        list_of_files.append(w)
-
-    for i in
+         return nb_word_dic
 
 
+# Fonction qui renvoie l'IDF d'un mot
+def IDF(word):
+
+    # Iteration pour trouver le mot dans chaque doc
+
+    counter = 0
+    for i in list_of_files:
+        with open(f"{i}", "r") as f:
+            files = f.read().split()
+            if word in files:
+                counter += 1
+
+    # Calcule de la proportion du mot dans chaque doc + score IDF
+
+    proportion_word = counter / len(list_of_files)
+
+    if proportion_word == 0:
+        score_IDF = 0
+    else:
+        score_IDF = math.log(1 / proportion_word)
+
+    return score_IDF
+
+# Fonction qui renvoie un dic associant à chaque mot son IDF
+def dic_score_IDF():
 
 
+    dic_score_IDF = dict()
 
+    for file in list_of_files:
+        with open(f"{file}", "r") as f:
+            word = f.read().split()
+            for word in file:
+                score_IDF = IDF(word)
+                dic_score_IDF[word] = score_IDF
 
+    return dic_score_IDF
 
+def TF_IDF(word,file):
 
+    i = dic_score_IDF()
+    w = TF(file)
+    score_TF_IDF = i[word] * w[word]
 
-
-
-
-
-
-
-
-
+    return score_TF_IDF
 
 
 
