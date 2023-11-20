@@ -1,4 +1,5 @@
 import os
+import math
 
 def list_of_files(directory, extension):
     files_names = []
@@ -70,6 +71,28 @@ def remove_ponctuation():
                 txt += val
 
             file.write(txt)
+
+
+# Fonctions TF-IDF
+def TF(file):
+    with open(f"./cleaned/{file}.txt", 'r') as f:
+        list_of_word = []
+        files = f.read().split()
+        for word in files:
+            list_of_word.append(word)
+
+        nb_word_dic = dict()
+
+        for i in list_of_word:
+            if i in nb_word_dic:
+                nb_word_dic[i] += 1
+            else:
+                nb_word_dic[i] = 1
+
+        return nb_word_dic
+
+def IDF():
+    
 
 directory = "./speeches"
 files_names = list_of_files(directory, "txt")
