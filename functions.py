@@ -97,23 +97,31 @@ def IDF():
     #création d'une liste pour ouvir chaque fichier dans une boucle
 
     name = ['Chirac1', 'Chirac2', 'Giscard dEstaing', 'Hollande', 'Macron', 'Mitterrand1', 'Mitterrand2', 'Sarkozy']
-    list_of_files = []
+
+    #Il y avait deja une fonction prévu pour ça
+    list = list_of_files("./cleaned", ".txt")
+    """list_of_files = []
 
     for i in name:
         w = f"Nomination_{i}.txt"
-        list_of_files.append(w)
+        list_of_files.append(w)"""
 
     #itération avec la fonction TF
 
     nb_word_dic = dict()
 
-    for file in list_of_files:
+    for file in list:
         nb_word = TF(file)
         for i in nb_word:
             if i in nb_word_dic:
                 nb_word_dic[i] += 1
             else:
                 nb_word_dic[i] = 1
+    for cle, val in nb_word_dic.items():
+        nb_word_dic[cle] = math.log(8/val)
+    return nb_word_dic
+
+
 
 
 
@@ -133,3 +141,4 @@ print(files_names)
 print(affiche_nom(['Chirac', 'Chirac', 'Giscard dEstaing', 'Hollande', 'Macron', 'Mitterrand', 'Mitterrand', 'Sarkozy']))
 print(min())
 print(remove_ponctuation())
+print(IDF())
