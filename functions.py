@@ -98,17 +98,12 @@ def Matrix_TF_IDF(directory):
             tf_idf = TF_IDF(word, file)
             Matrix_tf_idf[i].append(tf_idf)
 
-    return Matrix_tf_idf
-
-
-def Transpose_Matrix():
-    Matrice = Matrix_TF_IDF("./cleaned")
     transposed_matrix = []
 
-    for i in range(len(Matrice[0])):
+    for i in range(len(Matrix_tf_idf[0])):
         transposed_row = []
-        for j in range(len(Matrice)):
-            transposed_row.append(Matrice[j][i])
+        for j in range(len(Matrix_tf_idf)):
+            transposed_row.append(Matrix_tf_idf[j][i])
         transposed_matrix.append(transposed_row)
 
     return transposed_matrix
