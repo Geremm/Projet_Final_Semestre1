@@ -39,7 +39,7 @@ def affiche_nom(List_noms):
 def min():
     for i in range(8):
         text = ""
-        L = list_of_files(".\speeches", "txt")
+        L = list_of_files("./speeches", "txt")
         emplacement = "./speeches/" + L[i]
         emplacement_cleaned = "./cleaned/" + L[i]
         print(emplacement_cleaned)
@@ -59,7 +59,7 @@ def remove_ponctuation():
     Ponctuations = {",": '', "-": " ", "'": " ", ".": '', "!": '', "?": '', ":": '', "_": " "}
     for i in range(8):
         txt = ''
-        L = list_of_files(".\cleaned", "txt")
+        L = list_of_files("./cleaned", "txt")
         emplacement = "./cleaned/" + L[i]
         with open(emplacement,"r") as file:
             contenu = file.read()
@@ -99,12 +99,6 @@ def IDF():
     name = ['Chirac1', 'Chirac2', 'Giscard dEstaing', 'Hollande', 'Macron', 'Mitterrand1', 'Mitterrand2', 'Sarkozy']
     list = list_of_files("./cleaned", ".txt")
 
-    #Il y avait deja une fonction faite pour
-    """list_of_files = []
-    for i in name:
-        w = f"Nomination_{i}.txt"
-        list_of_files.append(w)"""
-
     #itération avec la fonction TF
 
     nb_word_dic = dict()
@@ -118,9 +112,17 @@ def IDF():
                 nb_word_dic[i] = 1
 
     for cle, val in nb_word_dic.items():
-        nb_word_dic[cle] = math.log(8/val)
+        nb_word_dic[cle] = math.log((len(list)/val)+1)
     return nb_word_dic
 
+
+def TF_IDF(word, file):
+
+    TF = TF(file)
+    IDF = IDF()
+    TF_IDF = TF[word] * IDF[word]
+
+    return TF_IDF
 
 
 
