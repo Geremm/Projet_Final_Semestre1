@@ -66,7 +66,6 @@ def remove_ponctuation():
         with open(emplacement,"w") as file:
             for val in contenu:
                 if val in Ponctuations:
-                    print(Ponctuations[val])
                     val = Ponctuations[val]
                 txt += val
 
@@ -92,12 +91,9 @@ def TF(file):
 
         return nb_word_dic
 
-def IDF():
+def IDF(directory):
 
-    #création d'une liste pour ouvir chaque fichier dans une boucle
-
-    name = ['Chirac1', 'Chirac2', 'Giscard dEstaing', 'Hollande', 'Macron', 'Mitterrand1', 'Mitterrand2', 'Sarkozy']
-    list = list_of_files("./cleaned", ".txt")
+    list = list_of_files(directory, ".txt")
 
     #itération avec la fonction TF
 
@@ -112,33 +108,51 @@ def IDF():
                 nb_word_dic[i] = 1
 
     for cle, val in nb_word_dic.items():
-        nb_word_dic[cle] = math.log((len(list)/val)+1)
+        nb_word_dic[cle] = math.log((len(list)/val))
+        
     return nb_word_dic
 
 
-def TF_IDF(word, file):
+def TF_IDF(word,file):
 
-    TF = TF(file)
-    IDF = IDF()
-    TF_IDF = TF[word] * IDF[word]
+    tf = TF(file)
+    idf = IDF("./cleaned")
+    TF_IDF = tf[word] * idf[word]
+
 
     return TF_IDF
 
 
+def Matrix_TF_IDF(directory):
+
+
+    Matrix_tf_idf = []
+
+    list = list_of_files(directory,"txt")
+    for i in range(len(list)):
+        Matrix_tf_idf.append([])
+        for file in list:
+            dic_file = TF(file)
+            for word in dic_file:
+                tf_idf = TF_IDF(f'{word}',f'{file}')
+                Matrix_tf_idf[i].append(tf_idf)
+
+    return Matrix_tf_idf
 
 
 
+def Transpose_Matrix():
+
+    Matrice = Matrix_TF_IDF("./cleaned")
+    transposed_matrix = []
+
+    for i in range(len(Matrice[0])):
+        transposed_row = []
+        for j in range(len(Matrice)):
+            transposed_row.append(Matrice[j][i])
+        transposed_matrix.append(transposed_row)
+
+    return transposed_matrix
 
 
 
-
-
-
-
-directory = "./speeches"
-files_names = list_of_files(directory, "txt")
-print(files_names)
-print(affiche_nom(['Chirac', 'Chirac', 'Giscard dEstaing', 'Hollande', 'Macron', 'Mitterrand', 'Mitterrand', 'Sarkozy']))
-print(min())
-print(remove_ponctuation())
-print(IDF())
