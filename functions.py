@@ -23,39 +23,12 @@ def extract_names(L):
 def prenom_presidents(List_noms):
     Nom_Prenom = {"Chirac":"Jacques", "Giscard dEstaing": "Valery", "Holland": "François", "Macron":"Emannuel", "Mitterand": "François", "Sarkozy": "Nicolas"}
 
-def print_list(L):
-    L = str(L)
-    S = L.replace("[", '')
-    a = S.replace("]", '')
-    b = a.replace("'", '')
-    return b
+# Fonction pour afficher une liste sans doublons
 def affiche_nom(List_noms):
-    List_noms_sans_doublons = []
-    for i in range(len(List_noms)):
-        if List_noms[i] not in List_noms_sans_doublons:
-            List_noms_sans_doublons.append(List_noms[i])
-    return print_list(List_noms_sans_doublons)
+    List_noms_sans_doublons = list(set(List_noms))
+    print(List_noms_sans_doublons)
 
-def min():
-    for i in range(8):
-        text = ""
-        L = list_of_files("./speeches", "txt")
-        emplacement = "./speeches/" + L[i]
-        emplacement_cleaned = "./cleaned/" + L[i]
-        print(emplacement_cleaned)
-        print(emplacement)
-        with open(emplacement,"r") as file:
-            contenu = file.read()
-            with open(emplacement_cleaned,"w") as file_cleaned:
-                for char in contenu:
-                    ascii = ord(char)
-                    if ascii in range(65, 91):
-                        text += chr(ascii + 32)
-                    else:
-                        text += char
-                file_cleaned.write(text)
-
-def remove_ponctuation():
+def remove_punctuation():
     Ponctuations = {",": '', "-": " ", "'": " ", ".": '', "!": '', "?": '', ":": '', "_": " "}
     for i in range(8):
         txt = ''
@@ -71,15 +44,10 @@ def remove_ponctuation():
 
             file.write(txt)
 
-
 # Fonctions TF-IDF
 def TF(file):
-
     with open(f"./cleaned/{file}", 'r') as f:
-        list_of_word = []
-        files = f.read().split()
-        for word in files:
-            list_of_word.append(word)
+        list_of_word = f.read().split()
 
         nb_word_dic = dict()
 
@@ -92,14 +60,11 @@ def TF(file):
         return nb_word_dic
 
 def IDF(directory):
-
-    list = list_of_files(directory, ".txt")
-
-    #itération avec la fonction TF
+    file_list = list_of_files(directory, ".txt")
 
     nb_word_dic = dict()
 
-    for file in list:
+    for file in file_list:
         nb_word = TF(file)
         for i in nb_word:
             if i in nb_word_dic:
@@ -108,41 +73,35 @@ def IDF(directory):
                 nb_word_dic[i] = 1
 
     for cle, val in nb_word_dic.items():
-        nb_word_dic[cle] = math.log((len(list)/val))
+        nb_word_dic[cle] = math.log((len(file_list) / val))
 
     return nb_word_dic
 
-
-def TF_IDF(word,file):
-
+def TF_IDF(word, file):
     tf = TF(file)
     idf = IDF("./cleaned")
     TF_IDF = tf[word] * idf[word]
 
-
     return TF_IDF
-
 
 def Matrix_TF_IDF(directory):
 
-
     Matrix_tf_idf = []
 
-    list = list_of_files(directory,"txt")
-    for i in range(len(list)):
+    file_list = list_of_files(directory, "txt")
+
+    for i in range(len(file_list)):
         Matrix_tf_idf.append([])
-        for file in list:
-            dic_file = TF(file)
-            for word in dic_file:
-                tf_idf = TF_IDF(f'{word}',f'{file}')
-                Matrix_tf_idf[i].append(tf_idf)
+        file = file_list[i]
+        dic_file = TF(file)
+        for word in dic_file:
+            tf_idf = TF_IDF(word, file)
+            Matrix_tf_idf[i].append(tf_idf)
 
     return Matrix_tf_idf
 
 
-
 def Transpose_Matrix():
-
     Matrice = Matrix_TF_IDF("./cleaned")
     transposed_matrix = []
 
@@ -154,13 +113,5 @@ def Transpose_Matrix():
 
     return transposed_matrix
 
-#Teste_cote_Hiarina
-#teste
-#teste
 
-
-a = "Teste"
-b = "TEST"
-
-
-
+print(Matrix_TF_IDF("./cleaned"))
