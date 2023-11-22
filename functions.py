@@ -109,7 +109,7 @@ def IDF(directory):
 
     for cle, val in nb_word_dic.items():
         nb_word_dic[cle] = math.log((len(list)/val))
-        
+
     return nb_word_dic
 
 
@@ -153,6 +153,10 @@ def Transpose_Matrix():
         transposed_matrix.append(transposed_row)
 
     return transposed_matrix
+
+#Teste
+#teste
+#teste
 
 
 
