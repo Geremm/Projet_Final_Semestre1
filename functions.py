@@ -78,6 +78,7 @@ def IDF(directory):
     return nb_word_dic
 
 def TF_IDF(word, file):
+
     tf = TF(file)
     idf = IDF("./cleaned")
     TF_IDF = tf[word] * idf[word]
@@ -85,6 +86,7 @@ def TF_IDF(word, file):
     return TF_IDF
 
 def Matrix_TF_IDF(directory):
+
 
     Matrix_tf_idf = []
 
@@ -98,15 +100,9 @@ def Matrix_TF_IDF(directory):
             tf_idf = TF_IDF(word, file)
             Matrix_tf_idf[i].append(tf_idf)
 
-    transposed_matrix = []
-
-    for i in range(len(Matrix_tf_idf[0])):
-        transposed_row = []
-        for j in range(len(Matrix_tf_idf)):
-            transposed_row.append(Matrix_tf_idf[j][i])
-        transposed_matrix.append(transposed_row)
-
-    return transposed_matrix
+    return Matrix_tf_idf
 
 
-print(Matrix_TF_IDF("./cleaned"))
+Mat = Matrix_TF_IDF("./cleaned")
+print(Mat)
+
