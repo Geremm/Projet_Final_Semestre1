@@ -103,6 +103,29 @@ def Matrix_TF_IDF(directory):
     return Matrix_tf_idf
 
 
-Mat = Matrix_TF_IDF("./cleaned")
-print(Mat)
+def Transpose_Matrix(matrice):
+    # Trouver le nombre de lignes et de colonnes de la matrice
+    nombre_lignes = len(matrice)
+    nombre_colonnes = max(len(ligne) for ligne in matrice)
 
+    # Initialiser la matrice transposée avec des listes vides
+    matrice_transposee = [[] for i in range(nombre_colonnes)]
+
+    # Remplir la matrice transposée
+    for i in range(nombre_lignes):
+        for j in range(len(matrice[i])):
+            matrice_transposee[j].append(matrice[i][j] if j < len(matrice[i]))
+    return matrice_transposee
+
+
+
+
+
+
+
+
+
+
+
+
+        
