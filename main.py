@@ -17,7 +17,5 @@ for i in range(len(Matrix_tf_idf)):
                 else:
                     k += 1
 
-print(L)
-
 
 
