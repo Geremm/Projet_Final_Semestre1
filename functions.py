@@ -85,6 +85,10 @@ def TF_IDF(word, file):
 
     return TF_IDF
 
+def Str_file(file):
+    with open(f"./cleaned/{file}", 'r') as f:
+        contenu = f.read()
+        return contenu
 def Matrix_TF_IDF(directory):
 
 
@@ -93,13 +97,19 @@ def Matrix_TF_IDF(directory):
     file_list = list_of_files(directory, "txt")
 
     for i in range(len(file_list)):
+        if i == 4:
+            pass
         Matrix_tf_idf.append([])
         file = file_list[i]
         dic_file = TF(file)
         for word in dic_file:
             tf_idf = TF_IDF(word, file)
-            Matrix_tf_idf[i].append(tf_idf)
-
+            Matrix_tf_idf[i].append(word + " : " + str(tf_idf))
+        """
+        StrDoc = Str_file(file).split()
+        print(StrDoc)
+        print(len(Matrix_tf_idf[i]), len(StrDoc))
+        """
     return Matrix_tf_idf
 
 
@@ -116,12 +126,32 @@ def Transpose_Matrix(matrice):
         for j in range(len(matrice[i])):
             matrice_transposee[j].append(matrice[i][j] if j < len(matrice[i]) else None)
     return matrice_transposee
+
+def transfo_dic_list(dic):
+    T = []
+    for key in dic.keys():
+        T.append(key)
+    return T
+def Mot_via_scoreTFIDF(directory,i,j):
+    list = list_of_files(directory, "txt")
+    file = list[j]
+    tf = TF(file)
+    tf = transfo_dic_list(tf)
+    print(tf, "\n", len(tf), i, file)
+    mot = tf[i]
+    return mot
+#print(Mot_via_scoreTFIDF("./cleaned",3,4))
+
 Matrix = Matrix_TF_IDF("./cleaned")
-for ligne in Matrix:
-    print(ligne)
-    Matrix_Transposee = Transpose_Matrix(Matrix)
+for i in range(len(Matrix)):
+    print(Matrix[i])
+
+"""
+Matrix = Matrix_TF_IDF("./cleaned")
+Matrix_Transposee = Transpose_Matrix(Matrix)
 
 print("\n")
 
 for ligne in Matrix_Transposee:
     print(ligne)
+    """
