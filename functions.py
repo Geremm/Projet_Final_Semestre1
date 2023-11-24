@@ -16,8 +16,8 @@ def extract_names(file):    #Fonction qui extrait les noms des présidents dans 
     name = name[0].split("_")
 
     #Si il y a un numéro après le nom du président, il l'enlève et mets le nom du président dans une variable,
-    if name[-1] >= "0" and name[-1] <= "9":
-        NomPresident = name.replace(name[-1],'')
+    if name[-1][-1] >= "0" and name[-1][-1] <= "9":
+        NomPresident = name[-1].replace(name[-1][-1],'')
 
     #Sinon le programme mets juste le nom du président dans une variable
     else:
@@ -167,4 +167,4 @@ def Matrice_TF_IDF(Directory):
 
     return Matrix
 
-print(extract_names("Nomination_Macron.txt"))
+print(extract_names("Nomination_Macron3.txt"))
