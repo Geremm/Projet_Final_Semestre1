@@ -23,6 +23,32 @@ def extract_names(L):
 def prenom_presidents(List_noms):
     Nom_Prenom = {"Chirac":"Jacques", "Giscard dEstaing": "Valery", "Holland": "François", "Macron":"Emannuel", "Mitterand": "François", "Sarkozy": "Nicolas"}
 
+def print_list(L):
+    L = str(L)
+    S = L.replace("[", '')
+    a = S.replace("]", '')
+    b = a.replace("'", '')
+    return b
+
+def min():
+    for i in range(8):
+        text = ""
+        L = list_of_files(".\speeches", "txt")
+        emplacement = "./speeches/" + L[i]
+        emplacement_cleaned = "./cleaned/" + L[i]
+        print(emplacement_cleaned)
+        print(emplacement)
+        with open(emplacement,"r") as file:
+            contenu = file.read()
+            with open(emplacement_cleaned,"w") as file_cleaned:
+                for char in contenu:
+                    ascii = ord(char)
+                    if ascii in range(65, 91):
+                        text += chr(ascii + 32)
+                    else:
+                        text += char
+                file_cleaned.write(text)
+
 # Fonction pour afficher une liste sans doublons
 def affiche_nom(List_noms):
     List_noms_sans_doublons = list(set(List_noms))
@@ -43,6 +69,19 @@ def remove_punctuation():
                 txt += val
 
             file.write(txt)
+
+def AddDic(d1,d2):
+    D = {}
+    for cle in set(d1.keys()) & set(d2.keys()):
+        D[cle] = d1[cle] + d2[cle]
+    for cle in d1.keys():
+        if cle not in D:
+            D[cle] = d1[cle]
+    for cle in d2.keys():
+        if cle not in D:
+            D[cle] = d2[cle]
+
+    return D
 
 
 def list_of_word():
@@ -104,7 +143,7 @@ def TF_IDF(word, file):
 
     return TF_IDF
 
-def Matrice(Directory):
+def Matrice_TF_IDF(Directory):
 
     list_word = list_of_word()
     list_files = list_of_files("./cleaned",".txt")
@@ -119,8 +158,3 @@ def Matrice(Directory):
         Matrix.append(row)
 
     return Matrix
-
-
-
-
-
