@@ -81,7 +81,11 @@ def TF_IDF(word, file):
 
     tf = TF(file)
     idf = IDF("./cleaned")
-    TF_IDF = tf[word] * idf[word]
+    contenu = Str_file(file)
+    if word not in contenu:
+        TF_IDF = 0
+    else:
+        TF_IDF = tf[word] * idf[word]
 
     return TF_IDF
 
@@ -119,6 +123,7 @@ def Matrix_TF_IDF(directory):
     return Matrix_tf_idf
 
 
+
 def Transpose_Matrix(matrice):
     #Initialisation du nombre de ligne et de colonnes
     nombre_lignes = len(matrice)
@@ -151,25 +156,4 @@ def Mot_via_scoreTFIDF(Matrix,i,j):
     return mot
 #print(Mot_via_scoreTFIDF("./cleaned",3,4))
 
-Matrix = Matrix_TF_IDF("./cleaned")
-Matrix = Transpose_Matrix(Matrix)
-for i in range(len(Matrix)):
-    print(Matrix[i])
-
-"""
-Matrix = Matrix_TF_IDF("./cleaned")
-Matrix_Transposee = Transpose_Matrix(Matrix)
-
-print("\n")
-
-for ligne in Matrix_Transposee:
-    print(ligne)
-    """
-
-
-Directory = "./cleaned"
-Matrix_tf_idf = Matrix_TF_IDF(Directory)
-Matrix_tf_idf = Transpose_Matrix(Matrix_tf_idf)
-list = list_of_files(Directory,".txt")
-Matrix = Matrix_TF_IDF("./cleaned")
-Matrix = Transpose_Matrix(Matrix)
+TF_IDF("messieurs","Nomination_Macron")
