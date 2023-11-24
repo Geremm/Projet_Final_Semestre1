@@ -1,30 +1,31 @@
 from functions import *
 
-Directory = "./cleaned"
-Matrix_tf_idf = Matrix_TF_IDF(Directory)
-Matrix_tf_idf = Transpose_Matrix(Matrix_tf_idf)
-list = list_of_files(Directory,".txt")
-"""
-L = []
-for i in range(len(Matrix_tf_idf)):
-    for j in range(len(Matrix_tf_idf[i])):
-        if Matrix_tf_idf[i][j] == 0.0:
-            L.append(Mot_via_scoreTFIDF("./cleaned",i,j))
-print(L)
-"""
-"""
-L = []
+#Matrix = Matrice_TF_IDF("./cleaned")
+file1 = "Nomination_Chirac1.txt"
+file2 = "Nomination_CHirac2.txt"
+DicTxt1 = TF(file1)
+DicTxt2 = TF(file2)
+DicChirac = AddDic(DicTxt1,DicTxt2)
+T = []
+max = 0
+for cle, val in DicChirac.items():
+    if max < val:
+        T = []
+        max = val
+        T.append(cle)
+    elif max == val:
+        T.append(cle)
+print(T)
+print(max)
 
-for i in range(len(Matrix_tf_idf)):
-    for j in range(len(Matrix_tf_idf[i])):
-        if Matrix_tf_idf[i][j] == 0.0:
-            dic_word = TF(list[i])
-            k = 1
-            for cle in dic_word.keys():
-                if k == j:
-                    L.append(cle)
-                else:
-                    k += 1
-"""
-
-
+mot = "climat"
+Trouve = False
+i = 0
+list_files = list_of_files("./cleaned",".txt")
+while not Trouve:
+    tf = TF(list_files[i])
+    for cle in tf.keys():
+        if cle == mot:
+            Trouve = True
+            print(list_files[i])
+    i += 1

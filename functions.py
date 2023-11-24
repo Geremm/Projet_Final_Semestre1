@@ -1,29 +1,37 @@
 import os
 import math
-
-def list_of_files(directory, extension):
+def list_of_files(directory, extension):    #Fonction qui renvoie la liste des fichier présent dans le repertoire directory
     files_names = []
     for filename in os.listdir(directory):
         if filename.endswith(extension):
             files_names.append(filename)
     return files_names
 
-def extract_names(L):
-    T = []
-    for i in range(len(L)):
-        L[i] = L[i].split(".")
-        L[i][0] = L[i][0].split("_")
-        if L[i][0][-1][-1] >= "0" and L[i][0][-1][-1] <= "9":
-            a = L[i][0][-1].replace(L[i][0][-1][-1],'')
-        else:
-            a = L[i][0][-1]
-        T.append(a)
-    return T
+def extract_names(file):    #Fonction qui extrait les noms des présidents dans les noms des fichiers
 
-def prenom_presidents(List_noms):
+    #Séparation du .txt du reste de la chaine de caractère
+    name = file.split(".")
+
+    #Séparation du Nomation_ du nom du président
+    name = name[0].split("_")
+
+    #Si il y a un numéro après le nom du président, il l'enlève et mets le nom du président dans une variable,
+    if name[-1] >= "0" and name[-1] <= "9":
+        NomPresident = name.replace(name[-1],'')
+
+    #Sinon le programme mets juste le nom du président dans une variable
+    else:
+        NomPresident = name[-1]
+
+    #Ajoute le nom du président a la liste du nom des présidents
+    return NomPresident
+
+def prenom_presidents(Nom):
+
+    #Dictionnaire qui associe un nom de président a son prénom
     Nom_Prenom = {"Chirac":"Jacques", "Giscard dEstaing": "Valery", "Holland": "François", "Macron":"Emannuel", "Mitterand": "François", "Sarkozy": "Nicolas"}
-
-def print_list(L):
+    return Nom_Prenom[Nom]
+def print_list(L):   #Fonction pour afficher une liste sans les crochets ni les guillets
     L = str(L)
     S = L.replace("[", '')
     a = S.replace("]", '')
@@ -158,3 +166,5 @@ def Matrice_TF_IDF(Directory):
         Matrix.append(row)
 
     return Matrix
+
+print(extract_names("Nomination_Macron.txt"))
