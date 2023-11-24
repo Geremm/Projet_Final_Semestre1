@@ -166,5 +166,3 @@ def Matrice_TF_IDF(Directory):
         Matrix.append(row)
 
     return Matrix
-
-print(extract_names("Nomination_Macron3.txt"))
