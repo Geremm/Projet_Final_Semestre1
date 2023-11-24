@@ -7,7 +7,7 @@ def list_of_files(directory, extension):    #Fonction qui renvoie la liste des f
             files_names.append(filename)
     return files_names
 
-def extract_names(file):    #Fonction qui extrait les noms des présidents dans les noms des fichiers
+def extractnames(file):    #Fonction qui extrait les noms des présidents dans les noms des fichiers
 
     #Séparation du .txt du reste de la chaine de caractère
     name = file.split(".")
