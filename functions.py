@@ -38,48 +38,89 @@ def print_list(L):   #Fonction pour afficher une liste sans les crochets ni les 
     b = a.replace("'", '')
     return b
 
-def min():
-    for i in range(8):
+def min(directory):   #Fonction qui passe touts les caractère alphabétique d'une liste de fichier en minuscule
+    L = list_of_files(directory, "txt")
+
+    #Boucle pour pour appliquer la fonction a tout les fichiers du répertoire
+    for i in range(len(L)):
+
+        #Initialisation des variables utiles:
+            #text est la variable qui sera utilié pour contenir le texte transformer en minuscule
+
         text = ""
-        L = list_of_files(".\speeches", "txt")
-        emplacement = "./speeches/" + L[i]
+            #emplacement et emplacement_cleaned sont les deux variable utilisé pour contenir les deux adresses utiles
+        emplacement = directory + "/" + L[i]
         emplacement_cleaned = "./cleaned/" + L[i]
-        print(emplacement_cleaned)
-        print(emplacement)
+
+        #Ouverture du fichier avec des majuscules
         with open(emplacement,"r") as file:
+
+            #Récuperation de son contenu dans la variable contenu
             contenu = file.read()
-            with open(emplacement_cleaned,"w") as file_cleaned:
-                for char in contenu:
-                    ascii = ord(char)
-                    if ascii in range(65, 91):
-                        text += chr(ascii + 32)
-                    else:
-                        text += char
-                file_cleaned.write(text)
+
+        #Ouverture du fichier sans majuscules
+        with open(emplacement_cleaned,"w") as file_cleaned:
+
+            #Parcour de chaque carcatères
+            for char in contenu:
+
+                #Récupération du code ascii de chaque caractères pour voir si c'est une majuscule ou pas
+                ascii = ord(char)
+                if ascii in range(65, 91):
+
+                    #Si c'est le cas on la passe en minuscule et on l'ajoute a text
+                    text += chr(ascii + 32)
+                else:
+                    #Sinon on la laisse en minuscule et on la stock
+                    text += char
+            #Ajout de text dans le fichier cleaned
+            file_cleaned.write(text)
 
 # Fonction pour afficher une liste sans doublons
 def affiche_nom(List_noms):
     List_noms_sans_doublons = list(set(List_noms))
     print(List_noms_sans_doublons)
 
-def remove_punctuation():
+def remove_punctuation(directory):    #Fonction qui retire tt les ponctuation et les remplace par des espces si besoins
+
+    #Initialisation du dictionnaire avec toutes les ponctutations concernées en clé et la valeurs est sois un espace sois rien
     Ponctuations = {",": '', "-": " ", "'": " ", ".": '', "!": '', "?": '', ":": '', "_": " "}
-    for i in range(8):
+    #Initialisation de la list de tout les fichiers
+    L = list_of_files(directory, "txt")
+
+    #Boucle pour pour parcourir tous les fichiers
+    for i in range(len(L)):
+
+        #Initialisations des variable utiles, txt pour contenir le texte sans ponctuations et emplacement pour avoir l'adresse du répertoire
         txt = ''
-        L = list_of_files("./cleaned", "txt")
-        emplacement = "./cleaned/" + L[i]
+        emplacement = directory + "/" + L[i]
+
+        #Ouverture du fichier étudié et récupération de son contenus dans la variable contenu
         with open(emplacement,"r") as file:
             contenu = file.read()
-        with open(emplacement,"w") as file:
-            for val in contenu:
-                if val in Ponctuations:
-                    val = Ponctuations[val]
-                txt += val
 
+        #Reouverture du fichier mais en w ce coups ci pour pour enlever les ponctuations
+        with open(emplacement,"w") as file:
+
+            #Parcour du fichier via contenu
+            for char in contenu:
+
+                #Si le charactère est dans le Dictionnaire ponctuation on le remplace par sa valeur
+                if char in Ponctuations:
+                    char = Ponctuations[char]
+
+                #On ajoute le caractère dans txt
+                txt += char
+
+            #On écrit dans le fichier en mettant le texte sans les ponctuation
             file.write(txt)
 
-def AddDic(d1,d2):
+def AddDic(d1,d2):   #Fonction qui permet de fusionner deux dictionnaires entre eux
+
+    #Initialisaton du dictionnaire finale
     D = {}
+
+    #
     for cle in set(d1.keys()) & set(d2.keys()):
         D[cle] = d1[cle] + d2[cle]
     for cle in d1.keys():
@@ -136,33 +177,36 @@ def IDF(directory):
                 nb_word_dic[i] = 1
 
     for cle, val in nb_word_dic.items():
-        nb_word_dic[cle] = math.log((len(file_list) / val))
+        nb_word_dic[cle] = math.log((len(file_list) / val) + 1)
 
     return nb_word_dic
 
-def TF_IDF(word, file):
+def TF_IDF(word, idf, list_files):
+    TF_IDF_LIST =[word]
 
-    tf = TF(file)
-    idf = IDF("./cleaned")
-    if word in tf and word in idf:
-        TF_IDF = tf[word] * idf[word]
-    else:
-        TF_IDF = 0.0
+    for i in range(len(list_files)):
+        tf = TF(list_files[i])
+        if word in tf and word in idf:
+            TF_IDF = tf[word] * idf[word]
+        else:
+            TF_IDF = 0.0
+        TF_IDF_LIST.append(TF_IDF)
 
-    return TF_IDF
+    return TF_IDF_LIST
 
-def Matrice_TF_IDF(Directory):
-
+def Matrice_TF_IDF(directory):
+    idf = IDF(directory)
     list_word = list_of_word()
-    list_files = list_of_files("./cleaned",".txt")
+    list_files = list_of_files(directory,".txt")
 
     Matrix = []
 
-    for i, word in enumerate(list_word):
-        row = [word]
-        for file in list_files:
-            tf_idf = TF_IDF(word, file)
-            row.append(tf_idf)
-        Matrix.append(row)
+    for word in list_word:
+        tf_idf = TF_IDF(word, idf, list_files)
+        Matrix.append(tf_idf)
 
     return Matrix
+
+Matrix = Matrice_TF_IDF("./cleaned")
+for row in Matrix:
+    print(row)
