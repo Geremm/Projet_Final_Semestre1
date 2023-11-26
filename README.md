@@ -14,4 +14,5 @@ Les fonctionalité de notre programme permettent de:
 
 
 Lorsqu'il vous est proposé sois (y) sois (n), le y représente oui et le n non. Il faut donc taper dans la console python y pour oui et n pour non.
+
 Le reste des instructions pour utiliser le programme seront afficher dans la console python. 
