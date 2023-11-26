@@ -193,7 +193,7 @@ def IDF(directory):     #Fonction qui fiat le score IDF de tout les mots d'un r√
                 nb_word_dic[i] = 1
     #On parcours le dictionnaire final pour appliquer la formule de l'IDF
     for cle, val in nb_word_dic.items():
-        nb_word_dic[cle] = math.log((len(file_list) / val) + 1)
+        nb_word_dic[cle] = math.log((len(file_list) / val)) #Nous avons fait le choix de ne pas rajouter le +1 car la fonctionalit√© ne marchera pas.
 
     return nb_word_dic
 
