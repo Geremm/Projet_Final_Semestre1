@@ -2,6 +2,8 @@
 
 ### Hiarina-David RAKOTOARIVELO et Gérémy RUIS
 
+https://github.com/Geremm/Projet_Final_Semestre1
+
 Les fonctionalité de notre programme permettent de:
 
   * Connaitre les mots les moins important de tout le répertoire.
