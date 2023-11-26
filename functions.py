@@ -1,5 +1,6 @@
 import os
 import math
+import time
 def list_of_files(directory, extension):    #Fonction qui renvoie la liste des fichier présent dans le repertoire directory
     files_names = []
     for filename in os.listdir(directory):
@@ -120,12 +121,14 @@ def AddDic(d1,d2):   #Fonction qui permet de fusionner deux dictionnaires entre 
     #Initialisaton du dictionnaire finale
     D = {}
 
-    #
+    #On prend toute les cle communes des deux tableau et on additionne leur valeurs
     for cle in set(d1.keys()) & set(d2.keys()):
         D[cle] = d1[cle] + d2[cle]
+    #On rajoute au dictionnaire final les clefs et les valeurs qui ne sont pas dans D
     for cle in d1.keys():
         if cle not in D:
             D[cle] = d1[cle]
+    #De même avec d2
     for cle in d2.keys():
         if cle not in D:
             D[cle] = d2[cle]
@@ -133,29 +136,38 @@ def AddDic(d1,d2):   #Fonction qui permet de fusionner deux dictionnaires entre 
     return D
 
 
-def list_of_word():
+def list_of_word(directory):     #Fonction qui fait la liste de tout les mots de tout les documents
 
-    list = list_of_files("./cleaned", ".txt")
+    #Initialisation de la list de tout les fichiers et du tableua qui va contenir tout les mots
+    list = list_of_files(directory, ".txt")
+    list_word = []
 
-    list_of_word = []
-
+    #On fait une boucle qui parcour tout les fichiers
     for file in list:
+
+        #On utilise la fonction TF pour avoir la list de tout les mots dans un document
         Tf = TF(file)
+
+        #On ajoute tout les mots du fichiers dans list_word en vérifiant que le mot n'y est pas deja
         for word in Tf.keys():
-            if word not in list_of_word:
-                list_of_word.append(word)
+            if word not in list_word:
+                list_word.append(word)
 
-    return list_of_word
+    return list_word
 
+#============================= Fonctions TF-IDF
 
-# Fonctions TF-IDF
-def TF(file):
+def TF(file):    #Fonction TF
+
+    #Ouvertuire du fichier étudié
     with open(f"./cleaned/{file}", 'r') as f:
-        list_of_word = f.read().split()
 
+        #Initialisation de la list de tout les mots du fichier et du dictionnaire final
+        list_word = f.read().split()
         nb_word_dic = dict()
 
-        for i in list_of_word:
+        #On parcours les mots et si il sont deja dans le dictionnaire on ajoute 1, sinon on initialise la valeur du mot à 1
+        for i in list_word:
             if i in nb_word_dic:
                 nb_word_dic[i] += 1
             else:
@@ -163,50 +175,59 @@ def TF(file):
 
         return nb_word_dic
 
-def IDF(directory):
-    file_list = list_of_files(directory, ".txt")
+def IDF(directory):     #Fonction qui fiat le score IDF de tout les mots d'un répertoire
 
+    #Initialisation de la list des fichiers et du dictionnaire final
+    file_list = list_of_files(directory, ".txt")
     nb_word_dic = dict()
 
+    #Parcours de tout les fichiers et utilisation de TF pour avoir tout les mots d'un fichier sans doublon
     for file in file_list:
         nb_word = TF(file)
+
+        #Parcours de tout les mots du fichier, si le mot est dans le dictionnaire on mets + 1 sinon on l'initialise a 1
         for i in nb_word:
             if i in nb_word_dic:
                 nb_word_dic[i] += 1
             else:
                 nb_word_dic[i] = 1
-
+    #On parcours le dictionnaire final pour appliquer la formule de l'IDF
     for cle, val in nb_word_dic.items():
         nb_word_dic[cle] = math.log((len(file_list) / val) + 1)
 
     return nb_word_dic
 
-def TF_IDF(word, idf, list_files):
+def TF_IDF(word, idf, list_files):   #Fonction qui le TF IDF de 1 mot dans tout les documents
+
+    #Initialisation de la ligne final avec le mot étudié
     TF_IDF_LIST =[word]
 
+    #Parcour de tout les fichiers initialisation de la variable tf
     for i in range(len(list_files)):
         tf = TF(list_files[i])
+
+        #Si le mot est dans le dictionnaire tf et idf alors on fait le produit du score TF et IDF
         if word in tf and word in idf:
             TF_IDF = tf[word] * idf[word]
+        #Sinon le score TF_IDF vaut 0.0
         else:
             TF_IDF = 0.0
+        #On ajoute le score TF_IDF de ce mot dans la ligne de score TF IDF
         TF_IDF_LIST.append(TF_IDF)
 
     return TF_IDF_LIST
 
-def Matrice_TF_IDF(directory):
+def Matrice_TF_IDF(directory):   #Fonction qui fait la matrice TF_IDF
+    #Initialisation de toutes les varaibles utiles comme le score idf du repertorie, la list de tout les mots dans le répertoire et la list de tout les fichiers et de la Matrice
     idf = IDF(directory)
-    list_word = list_of_word()
+    list_word = list_of_word(directory)
     list_files = list_of_files(directory,".txt")
-
     Matrix = []
 
+    #Parcours de la list contenant tout les mots de tout les fichiers
     for word in list_word:
+
+        #Ajout de la ligne avec le score TF_IDF du mot étudié
         tf_idf = TF_IDF(word, idf, list_files)
         Matrix.append(tf_idf)
-
     return Matrix
-
-Matrix = Matrice_TF_IDF("./cleaned")
-for row in Matrix:
-    print(row)
