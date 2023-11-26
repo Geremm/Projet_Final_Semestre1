@@ -233,6 +233,7 @@ while not end:
         print("La fonctionnalité n'existe pas ")
 
     # Demande à l'utilisateur s'il souhaite voir d'autres fonctionnalités
+    print()
     stop = input("Voulez-vous voir d'autres fonctionnalités ? (y) or (n) ")
     stop = stop.lower()
 
