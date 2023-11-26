@@ -76,18 +76,74 @@ while not end:
         f3 = input("Souhaitez-vous voir le mot le plus prononcé par le président de votre choix ? (y) or (n) : ")
         f3 = f3.lower()
         if f3 == "y":
+
             president = input("Quel président voulez-vous choisir ? : ")
             name = ' '
             i = 0
 
             # Recherche du président spécifié dans les noms de fichiers
-            while name != president:
+            while i <= len(list_file) and name != president:
+
                 name = extractnames(list_file[i])
 
-                if name == president and list_file[i] != list_file[i + 1]:
+                try :
+                    if name == president and list_file[i] != list_file[i + 1]:
+                        T = []
+                        Max = 0
+                        DicTxt = TF(list_file[i])
+
+                        # Recherche du mot le plus prononcé dans le discours du président
+                        for cle, val in DicTxt.items():
+                            if Max < val:
+                                Max = val
+                        for cle,val in DicTxt.items():
+                            if val == Max:
+                                T.append(cle)
+
+                        # Affichage du mot le plus prononcé
+                        if len(T) > 1:
+                            print(f"{president} a prononcé le plus de fois le mot : {T[0]}")
+                            for i in range(1, len(T)):
+                                print(f"ainsi que le mot : {T[i]}")
+                        else:
+                            print(f"{president} a prononcé le plus de fois le mot : {T[0]}")
+
+                    # Recherche du mot le plus prononcé dans le discours du président (Si il y a 2 fichiers du même president)
+
+                    elif list_file[i] == list_file[i + 1] and name == president:
+                        file1 = f"{list_file[i]}"
+                        file2 = f"{list_file[i + 1]}"
+
+                        DicTxt1 = TF(file1)
+                        DicTxt2 = TF(file2)
+                        Dic_merge = AddDic(DicTxt1, DicTxt2)
+
+                        T = []
+                        Max = 0
+
+                        for cle, val in DicTxt.items():
+                            if Max < val:
+                                Max = val
+                        for cle, val in DicTxt.items():
+                            if val == Max:
+                                T.append(cle)
+
+                        # Affichage du mot le plus prononcé
+                        if len(T) > 1:
+                            print(f"{president} a prononcé le plus de fois le mot : {T[0]}")
+                            for i in range(1, len(T)):
+                                print(f"ainsi que le mot : {T[i]}")
+                        else:
+                            print(f"{president} a prononcé le plus de fois le mot : {T[0]}")
+
+                    else:
+                        i += 1
+
+                # Dans le cas où c'est le derniers président de la liste qui est demandé
+                except IndexError:
                     T = []
                     max = 0
-                    DicTxt = TF(list_file[i])
+                    DicTxt = TF(list_file[len(list_file)])
 
                     # Recherche du mot le plus prononcé dans le discours du président
                     for cle, val in DicTxt.items():
@@ -105,37 +161,10 @@ while not end:
                             print(f"ainsi que le mot : {T[i]}")
                     else:
                         print(f"{president} a prononcé le plus de fois le mot : {T[0]}")
-                        
-                # Recherche du mot le plus prononcé dans le discours du président (Si il y a 2 fichiers du même president
-                elif name == president and list_file[i] == list_file[i + 1]:
-                    file1 = f"{list_file[i]}"
-                    file2 = f"{list_file[i + 1]}"
 
-                    DicTxt1 = TF(file1)
-                    DicTxt2 = TF(file2)
-                    Dic_merge = AddDic(DicTxt1, DicTxt2)
+            if i > 8:
+                print("Le president demandé n'est pas dans le corpus de document")
 
-                    T = []
-                    max = 0
-
-                    for cle, val in Dic_merge.items():
-                        if max < val:
-                            T = []
-                            max = val
-                            T.append(cle)
-                        elif max == val:
-                            T.append(cle)
-
-                    # Affichage du mot le plus prononcé
-                    if len(T) > 1:
-                        print(f"{president} a prononcé le plus de fois le mot : {T[0]}")
-                        for i in range(1, len(T)):
-                            print(f"ainsi que le mot : {T[i]}")
-                    else:
-                        print(f"{president} a prononcé le plus de fois le mot : {T[0]}")
-
-                else:
-                    i += 1
 
     elif func == "4":
         # Fonctionnalité 4 : Noms du président et répétition d'un mot
@@ -233,7 +262,6 @@ while not end:
         print("La fonctionnalité n'existe pas ")
 
     # Demande à l'utilisateur s'il souhaite voir d'autres fonctionnalités
-    print()
     stop = input("Voulez-vous voir d'autres fonctionnalités ? (y) or (n) ")
     stop = stop.lower()
 
