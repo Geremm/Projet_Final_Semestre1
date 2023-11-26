@@ -1,6 +1,8 @@
+#Importation des modules
 import os
 import math
-import time
+
+
 def list_of_files(directory, extension):    #Fonction qui renvoie la liste des fichier présent dans le repertoire directory
     files_names = []
     for filename in os.listdir(directory):
@@ -155,7 +157,7 @@ def list_of_word(directory):     #Fonction qui fait la liste de tout les mots de
 
     return list_word
 
-#============================= Fonctions TF-IDF
+#======== Fonctions TF-IDF ============
 
 def TF(file):    #Fonction TF
 
@@ -193,7 +195,8 @@ def IDF(directory):     #Fonction qui fiat le score IDF de tout les mots d'un r�
                 nb_word_dic[i] = 1
     #On parcours le dictionnaire final pour appliquer la formule de l'IDF
     for cle, val in nb_word_dic.items():
-        nb_word_dic[cle] = math.log((len(file_list) / val)) #Nous avons fait le choix de ne pas rajouter le +1 car la fonctionalité ne marchera pas.
+        nb_word_dic[cle] = math.log((len(file_list) / val)) #Il n'y a pas de +1 sinon la fonctionnalité n°1 ne marche pas 
+        
 
     return nb_word_dic
 
