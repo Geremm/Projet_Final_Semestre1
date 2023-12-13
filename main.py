@@ -78,6 +78,8 @@ while not end:
         if f3 == "y":
             president = input("Quel président voulez-vous choisir ? : ")
             name = ' '
+            stopword = stop_word()
+            non_important = mot_non_important(Matrix_tf_idf)
             i = 0
 
             # Recherche du président spécifié dans les noms de fichiers
@@ -88,15 +90,15 @@ while not end:
                     T = []
                     max = 0
                     DicTxt = TF(list_file[i])
-                    non_important = mot_non_important(Matrix_tf_idf)
 
                     # Recherche du mot le plus prononcé dans le discours du président
                     for cle, val in DicTxt.items():
-                        if max < val and cle not in non_important:
+                        if max < val and cle not in non_important and cle not in stopword:
+                            print(cle)
                             T = []
                             max = val
                             T.append(cle)
-                        elif max == val and val not in non_important:
+                        elif max == val and val not in non_important and cle not in stopword:
                             T.append(cle)
 
                     # Affichage du mot le plus prononcé
@@ -120,11 +122,11 @@ while not end:
                     max = 0
 
                     for cle, val in Dic_merge.items():
-                        if max < val:
+                        if max < val and cle not in non_important and cle not in stopword:
                             T = []
                             max = val
                             T.append(cle)
-                        elif max == val:
+                        elif max == val and cle not in non_important and cle not in stopword:
                             T.append(cle)
 
                     # Affichage du mot le plus prononcé
