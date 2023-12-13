@@ -82,7 +82,7 @@ def affiche_nom(List_noms):
     List_noms_sans_doublons = list(set(List_noms))
     print(List_noms_sans_doublons)
 
-def remove_punctuation(directory):    #Fonction qui retire tt les ponctuation et les remplace par des espces si besoins
+def remove_punctuation_directory(directory):    #Fonction qui retire tt les ponctuation et les remplace par des espces si besoins
 
     #Initialisation du dictionnaire avec toutes les ponctutations concernées en clé et la valeurs est sois un espace sois rien
     Ponctuations = {",": '', "-": " ", "'": " ", ".": '', "!": '', "?": '', ":": '', "_": " "}
@@ -116,6 +116,26 @@ def remove_punctuation(directory):    #Fonction qui retire tt les ponctuation et
             #On écrit dans le fichier en mettant le texte sans les ponctuation
             file.write(txt)
 
+def remove_remove_punctuation(str):
+
+    # Initialisation du dictionnaire avec toutes les ponctutations concernées en clé et la valeurs est sois un espace sois rien
+    Ponctuations = {",": '', "-": " ", "'": " ", ".": '', "!": '', "?": '', ":": '', "_": " "}
+
+    #Initialisation du str final
+    txt = ''
+
+    # Parcour du fichier via contenu
+    for char in str:
+
+        # Si le charactère est dans le Dictionnaire ponctuation on le remplace par sa valeur
+        if char in Ponctuations:
+            char = Ponctuations[char]
+
+        # On ajoute le caractère dans txt
+        txt += char
+    return txt
+
+
 def AddDic(d1,d2):   #Fonction qui permet de fusionner deux dictionnaires entre eux
 
     #Initialisaton du dictionnaire finale
@@ -136,7 +156,7 @@ def AddDic(d1,d2):   #Fonction qui permet de fusionner deux dictionnaires entre 
     return D
 
 
-def list_of_word(directory):     #Fonction qui fait la liste de tout les mots de tout les documents
+def list_of_word(directory,stop_word):     #Fonction qui fait la liste de tout les mots de tout les documents
 
     #Initialisation de la list de tout les fichiers et du tableua qui va contenir tout les mots
     list = list_of_files(directory, ".txt")
@@ -150,10 +170,29 @@ def list_of_word(directory):     #Fonction qui fait la liste de tout les mots de
 
         #On ajoute tout les mots du fichiers dans list_word en vérifiant que le mot n'y est pas deja
         for word in Tf.keys():
-            if word not in list_word:
+            if word not in list_word and word not in stop_word:
                 list_word.append(word)
 
     return list_word
+
+def stop_word():
+    with open("stop_word.txt", "r") as f:
+        content = f.read()
+        content = content.split("-")
+    return content
+
+def mot_non_important(Matrix):
+    non_important = []
+    for i in  range(len(Matrix)):
+        s = 0
+        for j in range(1, len(Matrix[i])):
+            s += Matrix[i][j]
+        if s == 0:
+            non_important.append(Matrix[i][0])
+    return non_important
+
+
+
 
 #============================= Fonctions TF-IDF
 
@@ -193,7 +232,7 @@ def IDF(directory):     #Fonction qui fiat le score IDF de tout les mots d'un r�
                 nb_word_dic[i] = 1
     #On parcours le dictionnaire final pour appliquer la formule de l'IDF
     for cle, val in nb_word_dic.items():
-        nb_word_dic[cle] = math.log((len(file_list) / val) + 1)
+        nb_word_dic[cle] = math.log10((len(file_list) / val))
 
     return nb_word_dic
 
@@ -218,9 +257,12 @@ def TF_IDF(word, idf, list_files):   #Fonction qui le TF IDF de 1 mot dans tout 
     return TF_IDF_LIST
 
 def Matrice_TF_IDF(directory):   #Fonction qui fait la matrice TF_IDF
+
+    #Initialisation de la list des stop words
+    stop_word_list = stop_word()
     #Initialisation de toutes les varaibles utiles comme le score idf du repertorie, la list de tout les mots dans le répertoire et la list de tout les fichiers et de la Matrice
     idf = IDF(directory)
-    list_word = list_of_word(directory)
+    list_word = list_of_word(directory, stop_word_list)
     list_files = list_of_files(directory,".txt")
     Matrix = []
 
@@ -231,3 +273,28 @@ def Matrice_TF_IDF(directory):   #Fonction qui fait la matrice TF_IDF
         tf_idf = TF_IDF(word, idf, list_files)
         Matrix.append(tf_idf)
     return Matrix
+
+""""==================================================== Partie 2 =================================================================="""""
+def traitement_question(question):
+    question = remove_remove_punctuation(question)
+    question = question.split()
+    return question
+
+def mot_communs(question, file):
+    communs = []
+    tf = TF(file)
+    for mot in question:
+        if mot in tf:
+            communs.append(mot)
+    return communs
+print(stop_word())
+Matrix = Matrice_TF_IDF("./cleaned")
+print(mot_non_important(Matrix))
+for row in Matrix:
+    print(row)
+print(len(Matrix))
+
+question = traitement_question("Peux tu me trouver ce que tu cherchais tout à l'heure ?")
+
+
+
