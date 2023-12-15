@@ -1,6 +1,6 @@
 import os
 import math
-import time
+from random import *
 def list_of_files(directory, extension):    #Fonction qui renvoie la liste des fichier présent dans le repertoire directory
     files_names = []
     for filename in os.listdir(directory):
@@ -116,7 +116,7 @@ def remove_punctuation_directory(directory):    #Fonction qui retire tt les ponc
             #On écrit dans le fichier en mettant le texte sans les ponctuation
             file.write(txt)
 
-def remove_remove_punctuation(str):
+def remove_punctuation(str):
 
     # Initialisation du dictionnaire avec toutes les ponctutations concernées en clé et la valeurs est sois un espace sois rien
     Ponctuations = {",": '', "-": " ", "'": " ", ".": '', "!": '', "?": '', ":": '', "_": " "}
@@ -176,7 +176,7 @@ def list_of_word(directory,stop_word):     #Fonction qui fait la liste de tout l
     return list_word
 
 def stop_word():
-    with open("stop_word.txt", "r") as f:
+    with open("stop_word.txt", "r", encoding="utf-8") as f:
         content = f.read()
         content = content.split("-")
     return content
@@ -197,9 +197,9 @@ def mot_non_important(Matrix):
 #============================= Fonctions TF-IDF
 
 def TF(file):    #Fonction TF
-
+    Dic_contracte = {"l": ["le", "la"], "qu": ["que", "qui"], "n": ["ne"], "d": ["de"], "s": ["se", "sa"], "j": ["je"], "aujourd": ["aujourdhui"], "jusqu": ["jusque"], "hui": [""], "m": ["me", "ma"]}
     #Ouvertuire du fichier étudié
-    with open(f"./cleaned/{file}", 'r') as f:
+    with open(f"./cleaned/{file}", 'r', encoding="utf-8") as f:
 
         #Initialisation de la list de tout les mots du fichier et du dictionnaire final
         list_word = f.read().split()
@@ -207,6 +207,9 @@ def TF(file):    #Fonction TF
 
         #On parcours les mots et si il sont deja dans le dictionnaire on ajoute 1, sinon on initialise la valeur du mot à 1
         for i in list_word:
+            if i in Dic_contracte:
+                r = randint(0, len(Dic_contracte[i]) - 1)
+                i = Dic_contracte[i][r]
             if i in nb_word_dic:
                 nb_word_dic[i] += 1
             else:
@@ -313,6 +316,12 @@ def mot_communs(question, directory):
                 communs.append(mot)
     return communs
 
+def norm(vecteur):
+    summ = 0
+    for val in vecteur:
+        summ += val**2
+    return math.sqrt(summ)
+
 
 def TF_IDF_question(question):
 
@@ -337,6 +346,7 @@ def TF_IDF_question(question):
 
     return vector
 
+
 def dot_product(question, numberdoc):
 
     dot_product = 0
@@ -355,6 +365,3 @@ def dot_product(question, numberdoc):
             dot_product += VectorA[i] * VectorB[j]
 
     return dot_product
-
-
-
