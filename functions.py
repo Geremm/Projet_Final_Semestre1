@@ -275,8 +275,31 @@ def Matrice_TF_IDF(directory):   #Fonction qui fait la matrice TF_IDF
     return Matrix
 
 """"==================================================== Partie 2 =================================================================="""""
+
+M = Matrice_TF_IDF("./cleaned")
+Matrix_without_Word = []
+
+for i in range(len(M)):
+    Matrix_without_Word.append([])
+    for j in range(len(M[i])):
+        if M[i][j] != M[i][0]:
+            Matrix_without_Word[i].append(M[i][j])
+
+
+def transpose(matrix):
+    result = [[None for i in range(len(matrix))] for j in range(len(matrix[0]))]
+
+    for i in range(len(matrix[0])):
+        for j in range(len(matrix)):
+            result[i][j] = matrix[j][i]
+
+    return result
+
+
+
+
 def traitement_question(question):
-    question = remove_remove_punctuation(question)
+    question = remove_punctuation(question)
     question = question.split()
     return question
 
@@ -289,6 +312,52 @@ def mot_communs(question, directory):
             if mot in tf and mot not in communs:
                 communs.append(mot)
     return communs
+
+
+def TF_IDF_question(question):
+
+    qst = traitement_question(question)
+    TF_dic_qst = dict()
+
+    for word in qst:
+        if word in TF_dic_qst.keys():
+            TF_dic_qst[word] += 1
+        else:
+            TF_dic_qst[word] = 1
+
+    vector = []
+    dic_idf = IDF("./cleaned")
+
+    for word in dic_idf.keys():
+        if word in qst:
+            val = TF_dic_qst[word] * dic_idf[word]
+            vector.append(val)
+        else:
+            vector.append(0)
+
+    return vector
+
+
+def dot_product(question):
+
+    dot_product = 0
+    vector = TF_IDF_question(question)
+    Matrix_doc = transpose(Matrix_without_Word)
+
+    for i in range(len(Matrix_doc)):
+        for j in range(len(vector)):
+            for k in range(len(Matrix_without_Word[i])):
+                dot_product += vector[j] * Matrix_without_Word[i][k]
+
+    return dot_product
+
+
+
+
+
+
+
+
 print(stop_word())
 """Matrix = Matrice_TF_IDF("./cleaned")
 print(mot_non_important(Matrix))
