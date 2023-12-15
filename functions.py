@@ -438,11 +438,11 @@ def reponse(question):
         while Find == False:
             ligne += 1
             content = f.readline()
-            if word in content:
+            if word in content[:-1]:
                 Find = True
     with open(f"./speeches/{doc}", "r", encoding="utf-8") as f:
-        return f.readline(ligne)
-
-question = "zinbabwe moi le mot le plus puissant"
+        a = f.readlines()
+        return a[ligne]
+question = "C'est quoi le climat ?"
 print(traitement_question(question))
 print(reponse(question))
