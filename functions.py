@@ -299,8 +299,6 @@ def transpose(matrix):
     return result
 
 
-
-
 def traitement_question(question):
     question = remove_punctuation(question)
     question = question.split()
@@ -315,12 +313,6 @@ def mot_communs(question, directory):
             if mot in tf and mot not in communs:
                 communs.append(mot)
     return communs
-
-def norm(vecteur):
-    summ = 0
-    for val in vecteur:
-        summ += val**2
-    return math.sqrt(summ)
 
 
 def TF_IDF_question(question):
@@ -346,22 +338,50 @@ def TF_IDF_question(question):
 
     return vector
 
+def Vector_B(numberDoc):
+
+    VectorB = []
+    for i in range(len(Matrix_without_Word)):
+        if i == numberDoc:
+            for j in range(len(Matrix_without_Word[i])):
+                VectorB.append(Matrix_without_Word[i][j])
+
+    return VectorB
+
 def dot_product(question, numberdoc):
 
     dot_product = 0
     VectorA = TF_IDF_question(question)
-    Matrix_doc = transpose(Matrix_without_Word)
-    VectorB = []
-
-    for i in range(len(Matrix_doc)):
-        if i == numberdoc - 1:
-            for j in range(len(Matrix_doc[i])):
-                VectorB.append(Matrix_doc[i][j])
-
+    VectorB = Vector_B(numberdoc)
 
     for i in range(len(VectorA)):
         for j in range(len(VectorB)):
             dot_product += VectorA[i] * VectorB[j]
 
     return dot_product
+
+
+    return dot_product
+
+def norm(vecteur):
+    summ = 0
+    for val in vecteur:
+        summ += val**2
+    return math.sqrt(summ)
+
+
+def cosine_similarity(question,numberdoc):
+
+    VectorA = TF_IDF_question(question)
+
+
+    VectorB = Vector_B(numberdoc)
+    Dot_product = dot_product(question,numberdoc)
+    norm1 = norm(VectorA)
+    norm2 = norm(VectorB)
+    cosine_similarity = Dot_product/(norm1*norm2)
+
+
+    return cosine_similarity
+
 
