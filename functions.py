@@ -337,34 +337,24 @@ def TF_IDF_question(question):
 
     return vector
 
-
-def dot_product(question):
+def dot_product(question, numberdoc):
 
     dot_product = 0
-    vector = TF_IDF_question(question)
+    VectorA = TF_IDF_question(question)
     Matrix_doc = transpose(Matrix_without_Word)
+    VectorB = []
 
     for i in range(len(Matrix_doc)):
-        for j in range(len(vector)):
-            for k in range(len(Matrix_without_Word[i])):
-                dot_product += vector[j] * Matrix_without_Word[i][k]
+        if i == numberdoc:
+            for j in range(len(Matrix_doc[i])):
+                VectorB.append(Matrix_doc[i][j])
+    print(VectorB)
+
+    for i in range(len(VectorA)):
+        for j in range(len(VectorB)):
+            dot_product += VectorA[i] * VectorB[j]
 
     return dot_product
 
 
-
-
-
-
-
-
-print(stop_word())
-"""Matrix = Matrice_TF_IDF("./cleaned")
-print(mot_non_important(Matrix))
-for row in Matrix:
-    print(row)
-print(len(Matrix))"""
-
-question = traitement_question("Peux tu me trouver ce que tu cherchais tout à l'heure ?")
-print(mot_communs(question, "./cleaned"))
 
