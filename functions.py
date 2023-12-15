@@ -1,6 +1,9 @@
 import os
 import math
 from random import *
+
+
+
 def list_of_files(directory, extension):    #Fonction qui renvoie la liste des fichier présent dans le repertoire directory
     files_names = []
     for filename in os.listdir(directory):
@@ -338,21 +341,22 @@ def TF_IDF_question(question):
 
     return vector
 
-def Vector_B(numberDoc):
+def Vector_B(num):
 
-    VectorB = []
-    for i in range(len(Matrix_without_Word)):
-        if i == numberDoc:
-            for j in range(len(Matrix_without_Word[i])):
-                VectorB.append(Matrix_without_Word[i][j])
+    Vector = []
+    Matrix = transpose(Matrix_without_Word)
+    for i in range(len(Matrix)):
+        if i == (num - 1):
+            for j in range(len(Matrix[i])):
+                Vector.append(Matrix[i][j])
 
-    return VectorB
+    return Vector
 
-def dot_product(question, numberdoc):
+def dot_product(question, num):
 
     dot_product = 0
     VectorA = TF_IDF_question(question)
-    VectorB = Vector_B(numberdoc)
+    VectorB = Vector_B(num)
 
     for i in range(len(VectorA)):
         for j in range(len(VectorB)):
@@ -362,19 +366,20 @@ def dot_product(question, numberdoc):
 
 
 def norm(vecteur):
+
     summ = 0
     for val in vecteur:
         summ += val**2
-    return math.sqrt(summ)
+    norme = math.sqrt(summ)
+
+    return norme
 
 
-def cosine_similarity(question,numberdoc):
+def cosine_similarity(question,num):
 
     VectorA = TF_IDF_question(question)
-
-
-    VectorB = Vector_B(numberdoc)
-    Dot_product = dot_product(question,numberdoc)
+    VectorB = Vector_B(num)
+    Dot_product = dot_product(question,num)
     norm1 = norm(VectorA)
     norm2 = norm(VectorB)
     cosine_similarity = Dot_product/(norm1*norm2)
@@ -382,4 +387,25 @@ def cosine_similarity(question,numberdoc):
 
     return cosine_similarity
 
+
+def most_relevant_doc(question):
+
+    max = 0
+    cosin_sim_list = []
+    list_file = list_of_files("./cleaned",".txt")
+
+    for i in range(1,len(list_file)+1):
+        sim = cosine_similarity(question,i)
+        cosin_sim_list.append(sim)
+
+    for i in range(len(cosin_sim_list)):
+        if cosin_sim_list[i] > max:
+            max = cosin_sim_list[i]
+
+    index = cosin_sim_list.index(max)
+
+
+    list = list_of_files("./speeches",".txt")
+
+    return list[index]
 
