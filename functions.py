@@ -355,7 +355,7 @@ def dot_product(question, numberdoc):
     VectorB = []
 
     for i in range(len(Matrix_doc)):
-        if i == numberdoc - 1 :
+        if i == numberdoc - 1:
             for j in range(len(Matrix_doc[i])):
                 VectorB.append(Matrix_doc[i][j])
     print(VectorB)
