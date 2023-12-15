@@ -346,7 +346,6 @@ def TF_IDF_question(question):
 
     return vector
 
-
 def dot_product(question, numberdoc):
 
     dot_product = 0
@@ -358,10 +357,11 @@ def dot_product(question, numberdoc):
         if i == numberdoc - 1:
             for j in range(len(Matrix_doc[i])):
                 VectorB.append(Matrix_doc[i][j])
-    print(VectorB)
+
 
     for i in range(len(VectorA)):
         for j in range(len(VectorB)):
             dot_product += VectorA[i] * VectorB[j]
 
     return dot_product
+
