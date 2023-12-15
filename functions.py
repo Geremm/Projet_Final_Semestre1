@@ -280,21 +280,22 @@ def traitement_question(question):
     question = question.split()
     return question
 
-def mot_communs(question, file):
+def mot_communs(question, directory):
+    list_files = list_of_files(directory, ".txt")
     communs = []
-    tf = TF(file)
-    for mot in question:
-        if mot in tf:
-            communs.append(mot)
+    for file in list_files:
+        tf = TF(file)
+        for mot in question:
+            if mot in tf and mot not in communs:
+                communs.append(mot)
     return communs
 print(stop_word())
-Matrix = Matrice_TF_IDF("./cleaned")
+"""Matrix = Matrice_TF_IDF("./cleaned")
 print(mot_non_important(Matrix))
 for row in Matrix:
     print(row)
-print(len(Matrix))
+print(len(Matrix))"""
 
 question = traitement_question("Peux tu me trouver ce que tu cherchais tout à l'heure ?")
-
-
+print(mot_communs(question, "./cleaned"))
 
