@@ -361,8 +361,6 @@ def dot_product(question, numberdoc):
     return dot_product
 
 
-    return dot_product
-
 def norm(vecteur):
     summ = 0
     for val in vecteur:
