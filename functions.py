@@ -303,8 +303,17 @@ def transpose(matrix):
 
 
 def traitement_question(question):
+    indice_remove = []
+    stopword = stop_word()
     question = remove_punctuation(question)
     question = question.split()
+    for i in range(len(question)):
+        if question[i] in stopword:
+            indice_remove.append(i)
+    for j,i in enumerate(indice_remove):
+        question.remove(question[i-j])
+
+
     return question
 
 def mot_communs(question, directory):
@@ -408,4 +417,32 @@ def most_relevant_doc(question):
     list = list_of_files("./speeches",".txt")
 
     return list[index]
+def TFIDF_Max(question):
+    List = TF_IDF_question(question)
+    question = traitement_question(question)
+    max = List[0]
+    index_max = 0
+    for i in range(len(List)):
+        if List[i] > max:
+            max = List[i]
+        if List[i] != 0:
+            index_max += 1
+    return question[index_max]
 
+def reponse(question):
+    word = TFIDF_Max(question)
+    doc = most_relevant_doc(question)
+    with open(f"./cleaned/{doc}", 'r', encoding="utf-8") as f:
+        Find = False
+        ligne = 0
+        while Find == False:
+            ligne += 1
+            content = f.readline()
+            if word in content:
+                Find = True
+    with open(f"./speeches/{doc}", "r", encoding="utf-8") as f:
+        return f.readline(ligne)
+
+question = "zinbabwe moi le mot le plus puissant"
+print(traitement_question(question))
+print(reponse(question))
