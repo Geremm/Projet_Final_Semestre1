@@ -352,7 +352,7 @@ def TF_IDF_question(question, directory):
             val = TF_dic_qst[word] * dic_idf[word]
             vector.append(val)
         else:
-            vector.append(0)
+            vector.append(0.0)
 
     return vector
 
@@ -432,8 +432,34 @@ def TFIDF_Max(question, list_idf):
             index_max = i
     return list_idf[index_max]
 
+def traitement_reponse_starter(answer):
+    answer = min(answer)
+    txt = ''
+    alphabet = [chr(char) for char in range(ord('a'), ord('z')+1)]
+    i = 0
+    while answer[i] not in alphabet:
+        i += 1
+    for j in range(i, len(answer)):
+        txt += answer[j]
+    return txt
+
+def traitement_reponse(answer):
+    answer = min(answer)
+    txt = ''
+    alphabet = [chr(char) for char in range(ord('a'), ord('z')+1)]
+    i = 0
+    while answer[i] not in alphabet:
+        i += 1
+
+    txt += chr(ord(answer[i]) - 32)
+    for j in range(i + 1, len(answer)):
+        txt += answer[j]
+    return txt
+
+
 def reponse(question):
     question = traitement_question(question)
+    print(question)
     dic_idf = IDF("./cleaned")
     list_idf = [key for key in dic_idf.keys()]
     word = TFIDF_Max(question, list_idf)
@@ -458,5 +484,5 @@ def answer_with_starters(question):
     answer = reponse(question)
     if list_Question[0] in question_starters.keys():
         Starter = question_starters[list_Question[0]]
-        return Starter + " " + answer
-    return answer
+        return Starter + " " + traitement_reponse_starter(answer)
+    return traitement_reponse(answer)
