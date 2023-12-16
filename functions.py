@@ -3,7 +3,6 @@ import math
 from random import *
 
 
-
 def list_of_files(directory, extension):    #Fonction qui renvoie la liste des fichier présent dans le repertoire directory
     files_names = []
     for filename in os.listdir(directory):
@@ -42,7 +41,7 @@ def print_list(L):   #Fonction pour afficher une liste sans les crochets ni les 
     b = a.replace("'", '')
     return b
 
-def min(directory):   #Fonction qui passe touts les caractère alphabétique d'une liste de fichier en minuscule
+def min_directory(directory):   #Fonction qui passe touts les caractère alphabétique d'une liste de fichier en minuscule
     L = list_of_files(directory, "txt")
 
     #Boucle pour pour appliquer la fonction a tout les fichiers du répertoire
@@ -238,7 +237,7 @@ def IDF(directory):     #Fonction qui fiat le score IDF de tout les mots d'un r�
                 nb_word_dic[i] = 1
     #On parcours le dictionnaire final pour appliquer la formule de l'IDF
     for cle, val in nb_word_dic.items():
-        nb_word_dic[cle] = math.log10((len(file_list) / val))
+        nb_word_dic[cle] = math.log10((len(file_list)) / val)
 
     return nb_word_dic
 
@@ -301,18 +300,27 @@ def transpose(matrix):
 
     return result
 
+def min(str):
+    txt = ''
+    for char in str:
+        if ord(char) >= 65 and ord(char) <= 90:
+            txt += chr(ord(char) + 32)
+        else:
+            txt += char
+
+    return txt
 
 def traitement_question(question):
     indice_remove = []
     stopword = stop_word()
     question = remove_punctuation(question)
+    question = min(question)
     question = question.split()
     for i in range(len(question)):
         if question[i] in stopword:
             indice_remove.append(i)
-    for j,i in enumerate(indice_remove):
+    for j, i in enumerate(indice_remove):
         question.remove(question[i-j])
-
 
     return question
 
@@ -327,22 +335,20 @@ def mot_communs(question, directory):
     return communs
 
 
-def TF_IDF_question(question):
+def TF_IDF_question(question, directory):
 
-    qst = traitement_question(question)
     TF_dic_qst = dict()
 
-    for word in qst:
+    for word in question:
         if word in TF_dic_qst.keys():
             TF_dic_qst[word] += 1
         else:
             TF_dic_qst[word] = 1
 
     vector = []
-    dic_idf = IDF("./cleaned")
-
+    dic_idf = IDF(directory)
     for word in dic_idf.keys():
-        if word in qst:
+        if word in question:
             val = TF_dic_qst[word] * dic_idf[word]
             vector.append(val)
         else:
@@ -364,7 +370,7 @@ def Vector_B(num):
 def dot_product(question, num):
 
     dot_product = 0
-    VectorA = TF_IDF_question(question)
+    VectorA = TF_IDF_question(question, "./cleaned")
     VectorB = Vector_B(num)
 
     for i in range(len(VectorA)):
@@ -380,13 +386,12 @@ def norm(vecteur):
     for val in vecteur:
         summ += val**2
     norme = math.sqrt(summ)
-
     return norme
 
 
 def cosine_similarity(question,num):
 
-    VectorA = TF_IDF_question(question)
+    VectorA = TF_IDF_question(question, "./cleaned")
     VectorB = Vector_B(num)
     Dot_product = dot_product(question,num)
     norm1 = norm(VectorA)
@@ -417,24 +422,27 @@ def most_relevant_doc(question):
     list = list_of_files("./speeches",".txt")
 
     return list[index]
-def TFIDF_Max(question):
-    List = TF_IDF_question(question)
-    question = traitement_question(question)
+def TFIDF_Max(question, list_idf):
+    List = TF_IDF_question(question, "./cleaned")
     max = List[0]
     index_max = 0
     for i in range(len(List)):
         if List[i] > max:
             max = List[i]
-        if List[i] != 0:
-            index_max += 1
-    return question[index_max]
+            index_max = i
+    return list_idf[index_max]
 
 def reponse(question):
-    word = TFIDF_Max(question)
+    question = traitement_question(question)
+    dic_idf = IDF("./cleaned")
+    list_idf = [key for key in dic_idf.keys()]
+    word = TFIDF_Max(question, list_idf)
+    print(word)
     doc = most_relevant_doc(question)
+    print(doc)
     with open(f"./cleaned/{doc}", 'r', encoding="utf-8") as f:
         Find = False
-        ligne = 0
+        ligne = -1
         while Find == False:
             ligne += 1
             content = f.readline()
@@ -443,6 +451,12 @@ def reponse(question):
     with open(f"./speeches/{doc}", "r", encoding="utf-8") as f:
         a = f.readlines()
         return a[ligne]
-question = "C'est quoi le climat ?"
-print(traitement_question(question))
-print(reponse(question))
+
+def answer_with_starters(question):
+    question_starters = {"Comment": "Après analyse, ", "Pourquoi": "Car, ", "Peux-tu": "Oui, bien sûr!"}
+    list_Question = question.split()
+    answer = reponse(question)
+    if list_Question[0] in question_starters.keys():
+        Starter = question_starters[list_Question[0]]
+        return Starter + " " + answer
+    return answer
