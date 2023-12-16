@@ -219,7 +219,7 @@ def TF(file):    #Fonction TF
 
         return nb_word_dic
 
-def IDF(directory):     #Fonction qui fiat le score IDF de tout les mots d'un répertoire
+def IDF(directory, stopword):     #Fonction qui fiat le score IDF de tout les mots d'un répertoire
 
     #Initialisation de la list des fichiers et du dictionnaire final
     file_list = list_of_files(directory, ".txt")
@@ -231,9 +231,9 @@ def IDF(directory):     #Fonction qui fiat le score IDF de tout les mots d'un r�
 
         #Parcours de tout les mots du fichier, si le mot est dans le dictionnaire on mets + 1 sinon on l'initialise a 1
         for i in nb_word:
-            if i in nb_word_dic:
+            if i in nb_word_dic and i not in stopword:
                 nb_word_dic[i] += 1
-            else:
+            elif i not in stopword:
                 nb_word_dic[i] = 1
     #On parcours le dictionnaire final pour appliquer la formule de l'IDF
     for cle, val in nb_word_dic.items():
@@ -266,7 +266,7 @@ def Matrice_TF_IDF(directory):   #Fonction qui fait la matrice TF_IDF
     #Initialisation de la list des stop words
     stop_word_list = stop_word()
     #Initialisation de toutes les varaibles utiles comme le score idf du repertorie, la list de tout les mots dans le répertoire et la list de tout les fichiers et de la Matrice
-    idf = IDF(directory)
+    idf = IDF(directory,stop_word_list)
     list_word = list_of_word(directory, stop_word_list)
     list_files = list_of_files(directory,".txt")
     Matrix = []
@@ -336,7 +336,7 @@ def mot_communs(question, directory):
 
 
 def TF_IDF_question(question, directory):
-
+    stopword = stop_word()
     TF_dic_qst = dict()
 
     for word in question:
@@ -346,7 +346,7 @@ def TF_IDF_question(question, directory):
             TF_dic_qst[word] = 1
 
     vector = []
-    dic_idf = IDF(directory)
+    dic_idf = IDF(directory, stopword)
     for word in dic_idf.keys():
         if word in question:
             val = TF_dic_qst[word] * dic_idf[word]
@@ -372,11 +372,10 @@ def dot_product(question, num):
     dot_product = 0
     VectorA = TF_IDF_question(question, "./cleaned")
     VectorB = Vector_B(num)
-
+    t1 = time()
     for i in range(len(VectorA)):
-        for j in range(len(VectorB)):
-            dot_product += VectorA[i] * VectorB[j]
-
+        dot_product += VectorA[i] * VectorB[i]
+    t2 = time()
     return dot_product
 
 
@@ -457,15 +456,12 @@ def traitement_reponse(answer):
     return txt
 
 
-def reponse(question):
+def reponse(question,stopword):
     question = traitement_question(question)
-    print(question)
-    dic_idf = IDF("./cleaned")
+    dic_idf = IDF("./cleaned", stopword)
     list_idf = [key for key in dic_idf.keys()]
     word = TFIDF_Max(question, list_idf)
-    print(word)
     doc = most_relevant_doc(question)
-    print(doc)
     with open(f"./cleaned/{doc}", 'r', encoding="utf-8") as f:
         Find = False
         ligne = -1
@@ -478,10 +474,10 @@ def reponse(question):
         a = f.readlines()
         return a[ligne]
 
-def answer_with_starters(question):
+def answer_with_starters(question, stopword):
     question_starters = {"Comment": "Après analyse, ", "Pourquoi": "Car, ", "Peux-tu": "Oui, bien sûr!"}
     list_Question = question.split()
-    answer = reponse(question)
+    answer = reponse(question, stopword)
     if list_Question[0] in question_starters.keys():
         Starter = question_starters[list_Question[0]]
         return Starter + " " + traitement_reponse_starter(answer)
