@@ -1,6 +1,6 @@
 Bienvenu dans notre programme Chat-Bot (@1Hiarina & @Geremm)
 
-Ce programme a pour but d'analyser plusieurs discours de plusieurs présidents.
+Ce programme est composé de deux options, la première est un ChatBot et la deuxieme a pour but d'analyser plusieurs discours de plusieurs présidents.
 
 Vous retrouverez plusieurs fonctionnalités afin de traiter et d'analyser les discours
 voici la liste:
@@ -11,4 +11,3 @@ voici la liste:
 - Indiquer le(s) nom(s) du (des) président(s) qui a (ont) parlé du mot de votre choix ainsi que celui qui l’a répété le plus de (4)
 fois
 - Indiquer le premier président à parler du mot de votre choix (5)
-
