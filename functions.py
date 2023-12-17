@@ -2,7 +2,6 @@ import os
 import math
 from random import *
 
-
 def list_of_files(directory, extension):    #Fonction qui renvoie la liste des fichier présent dans le repertoire directory
     files_names = []
     for filename in os.listdir(directory):
@@ -199,7 +198,7 @@ def mot_non_important(Matrix):
 #============================= Fonctions TF-IDF
 
 def TF(file):    #Fonction TF
-    Dic_contracte = {"l": ["le", "la"], "qu": ["que", "qui"], "n": ["ne"], "d": ["de"], "s": ["se", "sa"], "j": ["je"], "aujourd": ["aujourdhui"], "jusqu": ["jusque"], "hui": [""], "m": ["me", "ma"]}
+    Dic_contracte = {"l": ["le", "la"], "qu": ["que", "qui"], "n": ["ne"], "d": ["de"], "s": ["se", "sa"], "j": ["je"], "aujourd": ["aujourdhui"], "jusqu": ["jusque"], "hui": [""], "m": ["me", "ma"], "c":["cela"]}
     #Ouvertuire du fichier étudié
     with open(f"./cleaned/{file}", 'r', encoding="utf-8") as f:
 
@@ -280,17 +279,18 @@ def Matrice_TF_IDF(directory):   #Fonction qui fait la matrice TF_IDF
     return Matrix
 
 """"==================================================== Partie 2 =================================================================="""""
+def Matrice_without_word(directory):
+    M = Matrice_TF_IDF(directory)
+    Matrix_without_Word = []
 
-M = Matrice_TF_IDF("./cleaned")
-Matrix_without_Word = []
+    for i in range(len(M)):
+        Matrix_without_Word.append([])
+        for j in range(len(M[i])):
+            if M[i][j] != M[i][0]:
+                Matrix_without_Word[i].append(M[i][j])
+    return Matrix_without_Word
 
-for i in range(len(M)):
-    Matrix_without_Word.append([])
-    for j in range(len(M[i])):
-        if M[i][j] != M[i][0]:
-            Matrix_without_Word[i].append(M[i][j])
-
-
+Matrix_without_Word = Matrice_without_word("./cleaned")
 def transpose(matrix):
     result = [[None for i in range(len(matrix))] for j in range(len(matrix[0]))]
 
@@ -311,17 +311,21 @@ def min(str):
     return txt
 
 def traitement_question(question):
+    Dic_contracte = {"l": ["le", "la"], "qu": ["que", "qui"], "n": ["ne"], "d": ["de"], "s": ["se", "sa"], "j": ["je"], "aujourd": ["aujourdhui"], "jusqu": ["jusque"], "hui": [""], "m": ["me", "ma"], "c": ["cela"]}
     indice_remove = []
     stopword = stop_word()
     question = remove_punctuation(question)
     question = min(question)
     question = question.split()
     for i in range(len(question)):
+        if question[i] in Dic_contracte:
+            r = randint(0, len(Dic_contracte[question[i]]) - 1)
+            question[i] = Dic_contracte[question[i]][r]
+
         if question[i] in stopword:
             indice_remove.append(i)
     for j, i in enumerate(indice_remove):
         question.remove(question[i-j])
-
     return question
 
 def mot_communs(question, directory):
@@ -353,7 +357,6 @@ def TF_IDF_question(question, directory):
             vector.append(val)
         else:
             vector.append(0.0)
-
     return vector
 
 def Vector_B(num):
@@ -367,11 +370,9 @@ def Vector_B(num):
 
     return Vector
 
-def dot_product(question, num):
+def dot_product(VectorA, VectorB):
 
     dot_product = 0
-    VectorA = TF_IDF_question(question, "./cleaned")
-    VectorB = Vector_B(num)
     t1 = time()
     for i in range(len(VectorA)):
         dot_product += VectorA[i] * VectorB[i]
@@ -392,9 +393,11 @@ def cosine_similarity(question,num):
 
     VectorA = TF_IDF_question(question, "./cleaned")
     VectorB = Vector_B(num)
-    Dot_product = dot_product(question,num)
+    Dot_product = dot_product(VectorA,VectorB)
     norm1 = norm(VectorA)
     norm2 = norm(VectorB)
+    if norm1*norm2 == 0:
+        return 0
     cosine_similarity = Dot_product/(norm1*norm2)
 
 
@@ -425,10 +428,16 @@ def TFIDF_Max(question, list_idf):
     List = TF_IDF_question(question, "./cleaned")
     max = List[0]
     index_max = 0
+    Change = False
     for i in range(len(List)):
         if List[i] > max:
             max = List[i]
             index_max = i
+            Change = True
+
+    if Change == False:
+        return False
+
     return list_idf[index_max]
 
 def traitement_reponse_starter(answer):
@@ -461,6 +470,10 @@ def reponse(question,stopword):
     dic_idf = IDF("./cleaned", stopword)
     list_idf = [key for key in dic_idf.keys()]
     word = TFIDF_Max(question, list_idf)
+
+    if word == False:
+        return "Base de donnée insuffisante pour répondre à cette question."
+
     doc = most_relevant_doc(question)
     with open(f"./cleaned/{doc}", 'r', encoding="utf-8") as f:
         Find = False
@@ -478,6 +491,9 @@ def answer_with_starters(question, stopword):
     question_starters = {"Comment": "Après analyse, ", "Pourquoi": "Car, ", "Peux-tu": "Oui, bien sûr!"}
     list_Question = question.split()
     answer = reponse(question, stopword)
+    if answer == "Base de donnée insuffisante pour répondre à cette question.":
+        return answer
+
     if list_Question[0] in question_starters.keys():
         Starter = question_starters[list_Question[0]]
         return Starter + " " + traitement_reponse_starter(answer)
