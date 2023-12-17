@@ -373,10 +373,8 @@ def Vector_B(num):
 def dot_product(VectorA, VectorB):
 
     dot_product = 0
-    t1 = time()
     for i in range(len(VectorA)):
         dot_product += VectorA[i] * VectorB[i]
-    t2 = time()
     return dot_product
 
 
@@ -492,7 +490,7 @@ def answer_with_starters(question, stopword):
     list_Question = question.split()
     answer = reponse(question, stopword)
     if answer == "Base de donnée insuffisante pour répondre à cette question.":
-        return answer
+        return "Base de donnée insuffisante pour répondre à cette question.\n"
 
     if list_Question[0] in question_starters.keys():
         Starter = question_starters[list_Question[0]]
