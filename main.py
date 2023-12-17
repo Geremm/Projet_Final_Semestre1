@@ -4,9 +4,10 @@ from functions import *
 # Obtention de la matrice TF-IDF à partir des fichiers nettoyés
 Matrix_tf_idf = Matrice_TF_IDF("./cleaned")
 list_file = list_of_files("./cleaned", ".txt")
+stopword = stop_word()
 
 # Lecture du contenu du fichier "./Project_Presentation"
-with open("./Project_Presentation", "r") as f:
+with open("./Project_Presentation", "r", encoding="utf-8") as f:
     content = f.read()
     print(content)
 
@@ -18,17 +19,17 @@ while not end:
 
     # Saisie de la fonctionnalité choisie par l'utilisateur
 
-    Menu = input("Voulez-vous utiliser le chatbot ou la fonctionalité de votre choix ? (Entrer (c) pour le chatbot ou (f) pour les fonctionnalités : ")
+    Menu = input(
+        "Voulez-vous utiliser le chatbot ou la fonctionalité de votre choix ? (Entrer (c) pour le chatbot ou (f) pour les fonctionnalités : ")
     Menu = Menu.lower()
 
-    #ChatBot
+    # ChatBot
     if Menu == "c":
 
-        print("Pour sortir du chatbot entrer la commande 'stop' ")
+        print("Pour sortir du chatbot entrer la commande 'stop'\n")
         stop = False
 
-
-        #Boucle ChatBot
+        # Boucle ChatBot
         while not stop:
 
             question = input("Veuillez entrer un message: ")
@@ -36,8 +37,8 @@ while not end:
             if question == "stop":
                 stop = True
                 break
-                
-            answer = answer_with_starters(question, "stop_word.txt")
+
+            answer = answer_with_starters(question, stopword)
             print(answer)
 
 
