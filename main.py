@@ -35,9 +35,10 @@ while not end:
 
             if question == "stop":
                 stop = True
-            else:
-                answer = answer_with_starters(question, "stop_word.txt")
-                print(answer)
+                break
+                
+            answer = answer_with_starters(question, "stop_word.txt")
+            print(answer)
 
 
 
