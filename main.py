@@ -20,19 +20,19 @@ while not end:
 
     Menu = input("Voulez-vous utiliser le chatbot ou la fonctionalité de votre choix ? (Entrer (c) pour le chatbot ou (f) pour les fonctionnalités : ")
     Menu = Menu.lower()
-    
-    #ChatBot 
+
+    #ChatBot
     if Menu == "c":
 
         print("Pour sortir du chatbot entrer la commande 'stop' ")
         stop = False
-        
-        
-        #Boucle ChatBot 
+
+
+        #Boucle ChatBot
         while not stop:
 
             question = input("Veuillez entrer un message: ")
-            question = question.lower()
+
             if question == "stop":
                 stop = True
             else:
