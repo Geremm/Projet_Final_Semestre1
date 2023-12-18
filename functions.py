@@ -1,6 +1,7 @@
 import os
 import math
 from random import *
+from time import sleep
 
 def list_of_files(directory, extension):    #Fonction qui renvoie la liste des fichier présent dans le repertoire directory
     files_names = []
@@ -195,7 +196,7 @@ def mot_non_important(Matrix):
 
 
 
-#============================= Fonctions TF-IDF
+#============================= Fonctions TF-IDF =============================
 
 def TF(file):    #Fonction TF
     Dic_contracte = {"l": ["le", "la"], "qu": ["que", "qui"], "n": ["ne"], "d": ["de"], "s": ["se", "sa"], "j": ["je"], "aujourd": ["aujourdhui"], "jusqu": ["jusque"], "hui": [""], "m": ["me", "ma"], "c":["cela"]}
@@ -278,7 +279,9 @@ def Matrice_TF_IDF(directory):   #Fonction qui fait la matrice TF_IDF
         Matrix.append(tf_idf)
     return Matrix
 
-""""==================================================== Partie 2 =================================================================="""""
+#==================================================== Partie 2 ==================================================================
+
+# Fonction qui génère une matrice sans le premier mot de chaque ligne,
 def Matrice_without_word(directory):
     M = Matrice_TF_IDF(directory)
     Matrix_without_Word = []
@@ -286,11 +289,14 @@ def Matrice_without_word(directory):
     for i in range(len(M)):
         Matrix_without_Word.append([])
         for j in range(len(M[i])):
+            # Exclut le premier mot de chaque ligne de la matrice
             if M[i][j] != M[i][0]:
                 Matrix_without_Word[i].append(M[i][j])
     return Matrix_without_Word
 
 Matrix_without_Word = Matrice_without_word("./cleaned")
+
+# Fonction qui transpose une matrice donnée.
 def transpose(matrix):
     result = [[None for i in range(len(matrix))] for j in range(len(matrix[0]))]
 
@@ -300,6 +306,7 @@ def transpose(matrix):
 
     return result
 
+# Fonction qui convertit une chaîne de caractères en minuscules tout en préservant les majuscules des lettres accentuées.
 def min(str):
     txt = ''
     for char in str:
@@ -307,9 +314,10 @@ def min(str):
             txt += chr(ord(char) + 32)
         else:
             txt += char
-
     return txt
 
+# Fonction qui traite une question en enlevant la ponctuation, en mettant en minuscules,
+# et en remplaçant certains mots par leurs formes complètes.
 def traitement_question(question):
     Dic_contracte = {"l": ["le", "la"], "qu": ["que", "qui"], "n": ["ne"], "d": ["de"], "s": ["se", "sa"], "j": ["je"], "aujourd": ["aujourdhui"], "jusqu": ["jusque"], "hui": [""], "m": ["me", "ma"], "c": ["cela"]}
     indice_remove = []
@@ -318,16 +326,19 @@ def traitement_question(question):
     question = min(question)
     question = question.split()
     for i in range(len(question)):
+        # Remplace certains mots par leurs formes complètes
         if question[i] in Dic_contracte:
             r = randint(0, len(Dic_contracte[question[i]]) - 1)
             question[i] = Dic_contracte[question[i]][r]
 
+        # Supprime les mots de la question qui sont dans la liste des stopwords
         if question[i] in stopword:
             indice_remove.append(i)
     for j, i in enumerate(indice_remove):
-        question.remove(question[i-j])
+        question.remove(question[i - j])
     return question
 
+# Fonction qui identifie les mots communs entre une question et les fichiers d'un répertoire.
 def mot_communs(question, directory):
     list_files = list_of_files(directory, ".txt")
     communs = []
@@ -338,7 +349,7 @@ def mot_communs(question, directory):
                 communs.append(mot)
     return communs
 
-
+# Fonction qui calcule le vecteur TF-IDF d'une question.
 def TF_IDF_question(question, directory):
     stopword = stop_word()
     TF_dic_qst = dict()
@@ -359,6 +370,7 @@ def TF_IDF_question(question, directory):
             vector.append(0.0)
     return vector
 
+# Fonction qui extrait le vecteur B d'une matrice en fonction d'un numéro spécifique.
 def Vector_B(num):
 
     Vector = []
@@ -370,6 +382,7 @@ def Vector_B(num):
 
     return Vector
 
+# Fonction qui calcule le produit scalaire de deux vecteurs.
 def dot_product(VectorA, VectorB):
 
     dot_product = 0
@@ -377,7 +390,7 @@ def dot_product(VectorA, VectorB):
         dot_product += VectorA[i] * VectorB[i]
     return dot_product
 
-
+# Fonction qui calcule la norme d'un vecteur.
 def norm(vecteur):
 
     summ = 0
@@ -386,30 +399,29 @@ def norm(vecteur):
     norme = math.sqrt(summ)
     return norme
 
-
-def cosine_similarity(question,num):
+# Fonction qui calcule la similarité cosinus entre une question et un document spécifique.
+def cosine_similarity(question, num):
 
     VectorA = TF_IDF_question(question, "./cleaned")
     VectorB = Vector_B(num)
-    Dot_product = dot_product(VectorA,VectorB)
+    Dot_product = dot_product(VectorA, VectorB)
     norm1 = norm(VectorA)
     norm2 = norm(VectorB)
-    if norm1*norm2 == 0:
+    if norm1 * norm2 == 0:
         return 0
-    cosine_similarity = Dot_product/(norm1*norm2)
-
+    cosine_similarity = Dot_product / (norm1 * norm2)
 
     return cosine_similarity
 
-
+# Fonction qui identifie le document le plus pertinent pour une question.
 def most_relevant_doc(question):
 
     max = 0
     cosin_sim_list = []
-    list_file = list_of_files("./cleaned",".txt")
+    list_file = list_of_files("./cleaned", ".txt")
 
-    for i in range(1,len(list_file)+1):
-        sim = cosine_similarity(question,i)
+    for i in range(1, len(list_file) + 1):
+        sim = cosine_similarity(question, i)
         cosin_sim_list.append(sim)
 
     for i in range(len(cosin_sim_list)):
@@ -418,10 +430,11 @@ def most_relevant_doc(question):
 
     index = cosin_sim_list.index(max)
 
-
-    list = list_of_files("./speeches",".txt")
+    list = list_of_files("./speeches", ".txt")
 
     return list[index]
+
+# Fonction qui identifie le mot avec la plus grande valeur TF-IDF pour une question donnée.
 def TFIDF_Max(question, list_idf):
     List = TF_IDF_question(question, "./cleaned")
     max = List[0]
@@ -438,10 +451,11 @@ def TFIDF_Max(question, list_idf):
 
     return list_idf[index_max]
 
+# Fonction qui traite la réponse obtenue pour les questions commençant par certains mots-clés.
 def traitement_reponse_starter(answer):
     answer = min(answer)
     txt = ''
-    alphabet = [chr(char) for char in range(ord('a'), ord('z')+1)]
+    alphabet = [chr(char) for char in range(ord('a'), ord('z') + 1)]
     i = 0
     while answer[i] not in alphabet:
         i += 1
@@ -449,28 +463,30 @@ def traitement_reponse_starter(answer):
         txt += answer[j]
     return txt
 
+# Fonction qui traite la réponse obtenue pour les autres questions.
 def traitement_reponse(answer):
     answer = min(answer)
     txt = ''
-    alphabet = [chr(char) for char in range(ord('a'), ord('z')+1)]
+    alphabet = [chr(char) for char in range(ord('a'), ord('z') + 1)]
     i = 0
     while answer[i] not in alphabet:
         i += 1
 
+    # Capitalise la première lettre de la réponse
     txt += chr(ord(answer[i]) - 32)
     for j in range(i + 1, len(answer)):
         txt += answer[j]
     return txt
 
-
-def reponse(question,stopword):
+# Fonction principale qui génère une réponse à une question en utilisant le modèle TF-IDF et la similarité cosinus.
+def reponse(question, stopword):
     question = traitement_question(question)
     dic_idf = IDF("./cleaned", stopword)
     list_idf = [key for key in dic_idf.keys()]
     word = TFIDF_Max(question, list_idf)
 
     if word == False:
-        return "Base de donnée insuffisante pour répondre à cette question."
+        return "Base de données insuffisante pour répondre à cette question."
 
     doc = most_relevant_doc(question)
     with open(f"./cleaned/{doc}", 'r', encoding="utf-8") as f:
@@ -485,14 +501,29 @@ def reponse(question,stopword):
         a = f.readlines()
         return a[ligne]
 
+# Fonction qui gère les débuts de réponse selon certains mots-clés de la question.
 def answer_with_starters(question, stopword):
+
     question_starters = {"Comment": "Après analyse, ", "Pourquoi": "Car, ", "Peux-tu": "Oui, bien sûr!"}
     list_Question = question.split()
     answer = reponse(question, stopword)
-    if answer == "Base de donnée insuffisante pour répondre à cette question.":
-        return "Base de donnée insuffisante pour répondre à cette question.\n"
+
+    if answer == "Base de données insuffisante pour répondre à cette question.":
+        return "Base de données insuffisante pour répondre à cette question.\n"
 
     if list_Question[0] in question_starters.keys():
         Starter = question_starters[list_Question[0]]
+
         return Starter + " " + traitement_reponse_starter(answer)
+
     return traitement_reponse(answer)
+
+
+#Fonction pour améliorer l'affichage 
+def time_display(text,delay):
+
+    for i in text:
+        print(i, end = '')
+        sleep(delay)
+
+    return " "
