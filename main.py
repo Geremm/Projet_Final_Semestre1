@@ -26,7 +26,10 @@ while not end:
     # ChatBot
     if Menu == "c":
 
-        print("Pour sortir du chatbot entrer la commande 'stop'\n")
+        with open("./Chatbot", "r", encoding="utf-8") as f:
+            content = f.read()
+            print(content)
+
         stop = False
 
         # Boucle ChatBot
@@ -34,13 +37,14 @@ while not end:
 
             question = input("Veuillez entrer un message: ")
 
-            if question == "stop":
+
+            #Stop pour quitter le ChatBot
+            if question == "stop" or question == "Stop":
                 stop = True
                 break
 
             answer = answer_with_starters(question, stopword)
-            print(answer)
-
+            print(time_display(answer,0.05))
 
 
 
