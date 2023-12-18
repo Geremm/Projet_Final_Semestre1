@@ -452,7 +452,7 @@ def TFIDF_Max(question, list_idf):
     return list_idf[index_max]
 
 # Fonction qui traite la réponse obtenue pour les questions commençant par certains mots-clés.
-def traitement_reponse_starter(answer):
+def traitement_answer_starter(answer):
     answer = min(answer)
     txt = ''
     alphabet = [chr(char) for char in range(ord('a'), ord('z') + 1)]
@@ -464,7 +464,7 @@ def traitement_reponse_starter(answer):
     return txt
 
 # Fonction qui traite la réponse obtenue pour les autres questions.
-def traitement_reponse(answer):
+def traitement_answer(answer):
     answer = min(answer)
     txt = ''
     alphabet = [chr(char) for char in range(ord('a'), ord('z') + 1)]
@@ -479,7 +479,7 @@ def traitement_reponse(answer):
     return txt
 
 # Fonction principale qui génère une réponse à une question en utilisant le modèle TF-IDF et la similarité cosinus.
-def reponse(question, stopword):
+def answer(question, stopword):
     question = traitement_question(question)
     dic_idf = IDF("./cleaned", stopword)
     list_idf = [key for key in dic_idf.keys()]
@@ -506,20 +506,20 @@ def answer_with_starters(question, stopword):
 
     question_starters = {"Comment": "Après analyse, ", "Pourquoi": "Car, ", "Peux-tu": "Oui, bien sûr!"}
     list_Question = question.split()
-    answer = reponse(question, stopword)
+    ans = answer(question, stopword)
 
-    if answer == "Base de données insuffisante pour répondre à cette question.":
+    if ans == "Base de données insuffisante pour répondre à cette question.":
         return "Base de données insuffisante pour répondre à cette question.\n"
 
     if list_Question[0] in question_starters.keys():
         Starter = question_starters[list_Question[0]]
 
-        return Starter + " " + traitement_reponse_starter(answer)
+        return Starter + " " + traitement_answer_starter(ans)
 
-    return traitement_reponse(answer)
+    return traitement_answer(ans)
 
 
-#Fonction pour améliorer l'affichage 
+#Fonction pour améliorer l'affichage
 def time_display(text,delay):
 
     for i in text:
