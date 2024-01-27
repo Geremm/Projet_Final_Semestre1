@@ -29,94 +29,95 @@ def extractnames(file):    #Fonction qui extrait les noms des présidents dans l
     #Ajoute le nom du président a la liste du nom des présidents
     return NomPresident
 
-def prenom_presidents(Nom):
+# def prenom_presidents(Nom):
 
-    #Dictionnaire qui associe un nom de président a son prénom
-    Nom_Prenom = {"Chirac":"Jacques", "Giscard dEstaing": "Valery", "Holland": "François", "Macron":"Emannuel", "Mitterand": "François", "Sarkozy": "Nicolas"}
-    return Nom_Prenom[Nom]
-def print_list(L):   #Fonction pour afficher une liste sans les crochets ni les guillets
-    L = str(L)
-    S = L.replace("[", '')
-    a = S.replace("]", '')
-    b = a.replace("'", '')
-    return b
+#     #Dictionnaire qui associe un nom de président a son prénom
+#     Nom_Prenom = {"Chirac":"Jacques", "Giscard dEstaing": "Valery", "Holland": "François", "Macron":"Emannuel", "Mitterand": "François", "Sarkozy": "Nicolas"}
+#     return Nom_Prenom[Nom]
 
-def min_directory(directory):   #Fonction qui passe touts les caractère alphabétique d'une liste de fichier en minuscule
-    L = list_of_files(directory, "txt")
+# def print_list(L):   #Fonction pour afficher une liste sans les crochets ni les guillets
+#     L = str(L)
+#     S = L.replace("[", '')
+#     a = S.replace("]", '')
+#     b = a.replace("'", '')
+#     return b
 
-    #Boucle pour pour appliquer la fonction a tout les fichiers du répertoire
-    for i in range(len(L)):
+# def min_directory(directory):   #Fonction qui passe touts les caractère alphabétique d'une liste de fichier en minuscule
+#     L = list_of_files(directory, "txt")
 
-        #Initialisation des variables utiles:
-            #text est la variable qui sera utilié pour contenir le texte transformer en minuscule
+#     #Boucle pour pour appliquer la fonction a tout les fichiers du répertoire
+#     for file_in_list in L:
 
-        text = ""
-            #emplacement et emplacement_cleaned sont les deux variable utilisé pour contenir les deux adresses utiles
-        emplacement = directory + "/" + L[i]
-        emplacement_cleaned = "./cleaned/" + L[i]
+#         #Initialisation des variables utiles:
+#             #text est la variable qui sera utilié pour contenir le texte transformer en minuscule
 
-        #Ouverture du fichier avec des majuscules
-        with open(emplacement,"r") as file:
+#         text = ""
+#             #emplacement et emplacement_cleaned sont les deux variable utilisé pour contenir les deux adresses utiles
+#         emplacement = os.path.join(directory, file_in_list)
+#         emplacement_cleaned = os.path.join("./cleaned", file_in_list)
 
-            #Récuperation de son contenu dans la variable contenu
-            contenu = file.read()
+#         #Ouverture du fichier avec des majuscules
+#         with open(emplacement,"r") as file:
 
-        #Ouverture du fichier sans majuscules
-        with open(emplacement_cleaned,"w") as file_cleaned:
+#             #Récuperation de son contenu dans la variable contenu
+#             contenu = file.read()
 
-            #Parcour de chaque carcatères
-            for char in contenu:
+#         #Ouverture du fichier sans majuscules
+#         with open(emplacement_cleaned,"w") as file_cleaned:
 
-                #Récupération du code ascii de chaque caractères pour voir si c'est une majuscule ou pas
-                ascii = ord(char)
-                if ascii in range(65, 91):
+#             #Parcour de chaque carcatères
+#             for char in contenu:
 
-                    #Si c'est le cas on la passe en minuscule et on l'ajoute a text
-                    text += chr(ascii + 32)
-                else:
-                    #Sinon on la laisse en minuscule et on la stock
-                    text += char
-            #Ajout de text dans le fichier cleaned
-            file_cleaned.write(text)
+#                 #Récupération du code ascii de chaque caractères pour voir si c'est une majuscule ou pas
+#                 ascii = ord(char)
+#                 if ascii in range(65, 91):
 
-# Fonction pour afficher une liste sans doublons
-def affiche_nom(List_noms):
-    List_noms_sans_doublons = list(set(List_noms))
-    print(List_noms_sans_doublons)
+#                     #Si c'est le cas on la passe en minuscule et on l'ajoute a text
+#                     text += chr(ascii + 32)
+#                 else:
+#                     #Sinon on la laisse en minuscule et on la stock
+#                     text += char
+#             #Ajout de text dans le fichier cleaned
+#             file_cleaned.write(text)
 
-def remove_punctuation_directory(directory):    #Fonction qui retire tt les ponctuation et les remplace par des espces si besoins
+# # Fonction pour afficher une liste sans doublons
+# def affiche_nom(List_noms):
+#     List_noms_sans_doublons = list(set(List_noms))
+#     print(List_noms_sans_doublons)
 
-    #Initialisation du dictionnaire avec toutes les ponctutations concernées en clé et la valeurs est sois un espace sois rien
-    Ponctuations = {",": '', "-": " ", "'": " ", ".": '', "!": '', "?": '', ":": '', "_": " "}
-    #Initialisation de la list de tout les fichiers
-    L = list_of_files(directory, "txt")
+# def remove_punctuation_directory(directory):    #Fonction qui retire tt les ponctuation et les remplace par des espces si besoins
 
-    #Boucle pour pour parcourir tous les fichiers
-    for i in range(len(L)):
+#     #Initialisation du dictionnaire avec toutes les ponctutations concernées en clé et la valeurs est sois un espace sois rien
+#     Ponctuations = {",": '', "-": " ", "'": " ", ".": '', "!": '', "?": '', ":": '', "_": " "}
+#     #Initialisation de la list de tout les fichiers
+#     L = list_of_files(directory, "txt")
 
-        #Initialisations des variable utiles, txt pour contenir le texte sans ponctuations et emplacement pour avoir l'adresse du répertoire
-        txt = ''
-        emplacement = directory + "/" + L[i]
+#     #Boucle pour pour parcourir tous les fichiers
+#     for i in range(len(L)):
 
-        #Ouverture du fichier étudié et récupération de son contenus dans la variable contenu
-        with open(emplacement,"r") as file:
-            contenu = file.read()
+#         #Initialisations des variable utiles, txt pour contenir le texte sans ponctuations et emplacement pour avoir l'adresse du répertoire
+#         txt = ''
+#         emplacement = directory + "/" + L[i]
 
-        #Reouverture du fichier mais en w ce coups ci pour pour enlever les ponctuations
-        with open(emplacement,"w") as file:
+#         #Ouverture du fichier étudié et récupération de son contenus dans la variable contenu
+#         with open(emplacement,"r") as file:
+#             contenu = file.read()
 
-            #Parcour du fichier via contenu
-            for char in contenu:
+#         #Reouverture du fichier mais en w ce coups ci pour pour enlever les ponctuations
+#         with open(emplacement,"w") as file:
 
-                #Si le charactère est dans le Dictionnaire ponctuation on le remplace par sa valeur
-                if char in Ponctuations:
-                    char = Ponctuations[char]
+#             #Parcour du fichier via contenu
+#             for char in contenu:
 
-                #On ajoute le caractère dans txt
-                txt += char
+#                 #Si le charactère est dans le Dictionnaire ponctuation on le remplace par sa valeur
+#                 if char in Ponctuations:
+#                     char = Ponctuations[char]
 
-            #On écrit dans le fichier en mettant le texte sans les ponctuation
-            file.write(txt)
+#                 #On ajoute le caractère dans txt
+#                 txt += char
+
+#             #On écrit dans le fichier en mettant le texte sans les ponctuation
+#             file.write(txt)
 
 def remove_punctuation(str):
 
@@ -294,8 +295,6 @@ def Matrice_without_word(directory):
                 Matrix_without_Word[i].append(M[i][j])
     return Matrix_without_Word
 
-Matrix_without_Word = Matrice_without_word("./cleaned")
-
 # Fonction qui transpose une matrice donnée.
 def transpose(matrix):
     result = [[None for i in range(len(matrix))] for j in range(len(matrix[0]))]
@@ -374,7 +373,7 @@ def TF_IDF_question(question, directory):
 def Vector_B(num):
 
     Vector = []
-    Matrix = transpose(Matrix_without_Word)
+    Matrix = transpose(Matrice_without_word("./cleaned"))
     for i in range(len(Matrix)):
         if i == (num - 1):
             for j in range(len(Matrix[i])):
